@@ -21,12 +21,24 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and Push Docker Image
+      # Build & Push Laravel app image
+      - name: Build and Push Laravel Image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile
+          file: ./docker/dockerfile
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/statamic-app:${{ github.ref_name }}
             ${{ secrets.DOCKERHUB_USERNAME }}/statamic-app:latest
+
+      # Build & Push MinIO custom image
+      - name: Build and Push MinIO Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/dockerfile.minio
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/statamic-minio:${{ github.ref_name }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/statamic-minio:latest

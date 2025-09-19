@@ -26,11 +26,6 @@ RUN apk add --no-cache $PHPIZE_DEPS \
     && docker-php-ext-enable redis \
     && apk del $PHPIZE_DEPS
 
-# Set environment variables to avoid Redis connection during build
-ENV REDIS_HOST=127.0.0.1 \
-    REDIS_PASSWORD=null \
-    REDIS_PORT=6379
-
 # Step 1: copy only composer files for caching
 COPY composer.json composer.lock ./
 
@@ -54,7 +49,8 @@ EXPOSE 9000
 # Entrypoint
 # ---------------------------
 # Run post-autoload scripts and Statamic install at runtime (if services available)
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY docker/docker-entrypoint-create-user.php /usr/local/bin/docker-entrypoint-create-user.php
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]

@@ -1,0 +1,11 @@
+FROM minio/minio:latest
+
+# Copy entrypoint script into container
+COPY docker/docker-entrypoint-minio.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint-minio.sh
+
+# Override entrypoint to our custom script
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint-minio.sh"]
+
+# Default CMD to start MinIO
+CMD ["server", "/data", "--console-address", ":8900"]
