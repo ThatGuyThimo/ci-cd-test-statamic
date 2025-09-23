@@ -6,9 +6,8 @@ on:
       - "v*"
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,22 +22,24 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and Push Docker Image
+      # Build & Push Laravel app image
+      - name: Build and Push Laravel Image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile
+          file: ./dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCR_REGISTRY }}/${{ secrets.APP_NAME }}:${{ github.ref_name }}
-            ${{ secrets.DOCR_REGISTRY }}/${{ secrets.APP_NAME }}:latest
+            ${{ secrets.DOCR_REGISTRY }}/statamic-app:${{ github.ref_name }}
+            ${{ secrets.DOCR_REGISTRY }}/statamic-app:latest
 
-      # - name: Install doctl
-      #   uses: digitalocean/action-doctl@v2
-      #   with:
-      #     token: ${{ secrets.DOCR_PASSWORD }}
-
-      # - name: Update App Platform App
-      #   run: |
-      #     doctl apps update ${{ secrets.DO_APP_ID }} \
-      #       --spec .do/app.yaml
+      # Build & Push MinIO custom image
+      - name: Build and Push MinIO Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/dockerfile.minio
+          push: true
+          tags: |
+            ${{ secrets.DOCR_REGISTRY }}/statamic-minio:${{ github.ref_name }}
+            ${{ secrets.DOCR_REGISTRY }}/statamic-minio:latest
