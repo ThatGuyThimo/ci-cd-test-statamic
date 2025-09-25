@@ -73,7 +73,7 @@ jobs:
           terraform apply -auto-approve
 
       - name: Upload Terraform log
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: terraform-log
           path: infra/terraform.log
