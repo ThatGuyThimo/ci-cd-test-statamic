@@ -66,9 +66,17 @@ jobs:
 
       - name: Terraform Init & Apply
         run: |
+          export TF_LOG=DEBUG
+          export TF_LOG_PATH=terraform.log
           cd infra
           terraform init
           terraform apply -auto-approve
+
+      - name: Upload Terraform log
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-log
+          path: infra/terraform.log
 
   # Deploy to DigitalOcean App Platform
   deploy:
