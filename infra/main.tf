@@ -103,18 +103,18 @@ resource "digitalocean_app" "statamic" {
         key   = "DB_PASSWORD"
         value = digitalocean_database_user.statamic_user.password
       }
-      env {
-        key   = "REDIS_HOST"
-        value = digitalocean_database_cluster.redis.host
-      }
-      env {
-        key   = "REDIS_PASSWORD"
-        value = digitalocean_database_cluster.redis.password
-      }
-      env {
-        key   = "REDIS_PORT"
-        value = digitalocean_database_cluster.redis.port
-      }
+#      env {
+#        key   = "REDIS_HOST"
+#        value = digitalocean_database_cluster.redis.host
+#      }
+#      env {
+#        key   = "REDIS_PASSWORD"
+#        value = digitalocean_database_cluster.redis.password
+#      }
+#      env {
+#        key   = "REDIS_PORT"
+#        value = digitalocean_database_cluster.redis.port
+#      }
       env {
         key   = "SPACES_BUCKET"
         value = digitalocean_spaces_bucket.spaces.name
@@ -133,7 +133,7 @@ resource "digitalocean_app" "statamic" {
 
         env {
         key   = "AWS_BUCKET"
-        value = digitalocean_spaces_bucket.statamic.name
+        value = digitalocean_spaces_bucket.spaces.name
       }
         env {
         key   = "AWS_DEFAULT_REGION"
