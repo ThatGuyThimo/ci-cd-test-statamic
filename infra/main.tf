@@ -124,21 +124,20 @@ resource "digitalocean_app" "statamic" {
         value = var.spaces_key
         scope = "RUN_AND_BUILD_TIME"
       }
-    env {
+      env {
         key   = "AWS_SECRET_ACCESS_KEY"
         value = var.spaces_secret
         scope = "RUN_AND_BUILD_TIME"
       }
-
-        env {
+      env {
         key   = "AWS_BUCKET"
         value = digitalocean_spaces_bucket.spaces.name
       }
-        env {
+      env {
         key   = "AWS_DEFAULT_REGION"
         value = var.region
       }
-        env {
+      env {
         key   = "AWS_ENDPOINT"
         value = "https://${var.spaces_bucket}.${var.region}.digitaloceanspaces.com"
       }
