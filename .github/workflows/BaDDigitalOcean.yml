@@ -87,7 +87,7 @@ jobs:
           sudo mv doctl /usr/local/bin
 
       - name: Authenticate doctl
-        run: doctl auth init -t ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+        run: doctl auth init -t ${{ secrets.DO_TOKEN }}
 
       - name: Push App Spec to App Platform
         run: doctl apps update ${{ secrets.DO_APP_ID }} --spec app.yaml
