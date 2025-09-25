@@ -124,8 +124,7 @@ resource "digitalocean_app" "statamic" {
         value = var.spaces_key
         scope = "RUN_AND_BUILD_TIME"
       }
-
-        env {
+    env {
         key   = "AWS_SECRET_ACCESS_KEY"
         value = var.spaces_secret
         scope = "RUN_AND_BUILD_TIME"

@@ -44,3 +44,15 @@ variable "spaces_bucket" {
   description = "DO Spaces bucket name"
   default     = "statamic-bucket"
 }
+
+variable "spaces_key" {
+  description = "DigitalOcean Spaces access key"
+  type        = string
+  sensitive   = true
+}
+
+variable "spaces_secret" {
+  description = "DigitalOcean Spaces secret key"
+  type        = string
+  sensitive   = true
+}

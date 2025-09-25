@@ -74,7 +74,9 @@ jobs:
             -var "app_key=${{ secrets.APP_KEY }}" \
             -var "app_image=${{ secrets.DOCR_REGISTRY }}/statamic-app:latest" \
             -var "db_password=${{ secrets.DB_PASSWORD }}" \
-            -var "redis_password=${{ secrets.REDIS_PASSWORD }}" | tee terraform.log
+            -var "redis_password=${{ secrets.REDIS_PASSWORD }}" \
+            -var "spaces_key=${{ secrets.SPACES_KEY }}" \
+            -var "spaces_secret=${{ secrets.SPACES_SECRET }}" | tee terraform.log
 
       - name: Upload Terraform log
         uses: actions/upload-artifact@v4
