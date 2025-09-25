@@ -51,14 +51,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set Terraform environment variables
-        run: |
-          export TF_VAR_do_token="${{ secrets.DO_TOKEN }}"
-          export TF_VAR_app_key="${{ secrets.APP_KEY }}"
-          export TF_VAR_app_image="${{ secrets.DOCR_REGISTRY }}/statamic-app:latest"
-          export TF_VAR_db_password="${{ secrets.DB_PASSWORD }}"
-          export TF_VAR_redis_password="${{ secrets.REDIS_PASSWORD }}"
-        shell: bash
+      # - name: Set Terraform environment variables
+      #   run: |
+      #     export TF_VAR_do_token="${{ secrets.DO_TOKEN }}"
+      #     export TF_VAR_app_key="${{ secrets.APP_KEY }}"
+      #     export TF_VAR_app_image="${{ secrets.DOCR_REGISTRY }}/statamic-app:latest"
+      #     export TF_VAR_db_password="${{ secrets.DB_PASSWORD }}"
+      #     export TF_VAR_redis_password="${{ secrets.REDIS_PASSWORD }}"
+      #   shell: bash
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
@@ -69,7 +69,12 @@ jobs:
           export TF_LOG=DEBUG
           # Don't set TF_LOG_PATH to avoid conflict with tee
           terraform init
-          terraform apply -auto-approve | tee terraform.log
+          terraform apply -auto-approve \
+            -var "do_token=${{ secrets.DO_TOKEN }}" \
+            -var "app_key=${{ secrets.APP_KEY }}" \
+            -var "app_image=${{ secrets.DOCR_REGISTRY }}/statamic-app:latest" \
+            -var "db_password=${{ secrets.DB_PASSWORD }}" \
+            -var "redis_password=${{ secrets.REDIS_PASSWORD }}" | tee terraform.log
 
       - name: Upload Terraform log
         uses: actions/upload-artifact@v4
