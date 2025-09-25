@@ -1,0 +1,139 @@
+provider "digitalocean" {
+  token = var.do_token
+}
+
+# --------------------------
+# Managed MySQL
+# --------------------------
+resource "digitalocean_database_cluster" "mysql" {
+  name       = "statamic-mysql"
+  engine     = "mysql"
+  version    = "8"
+  size       = "db-s-1vcpu-1gb"
+  region     = var.region
+  node_count = 1
+}
+
+resource "digitalocean_database_db" "statamic_db" {
+  cluster_id = digitalocean_database_cluster.mysql.id
+  name       = var.db_name
+}
+
+resource "digitalocean_database_user" "statamic_user" {
+  cluster_id = digitalocean_database_cluster.mysql.id
+  name       = var.db_user
+  password   = var.db_password
+}
+
+# --------------------------
+# Managed Redis
+# --------------------------
+#resource "digitalocean_database_cluster" "redis" {
+#  name       = "statamic-redis"
+#  engine     = "redis"
+#  version    = "7"
+#  size       = "db-s-1vcpu-1gb"
+#  region     = var.region
+#  node_count = 1
+#  password   = var.redis_password
+#}
+
+# --------------------------
+# DO Spaces / MinIO
+# --------------------------
+resource "digitalocean_spaces_bucket" "spaces" {
+  name   = var.spaces_bucket
+  region = var.region
+  acl    = "private"
+}
+
+# --------------------------
+# App Platform
+# --------------------------
+resource "digitalocean_app" "statamic" {
+  spec {
+    name = "statamic-app"
+
+    service {
+      name  = "web"
+      image {
+        registry_type = "DOCR"
+        registry      = var.app_image
+        tag           = "latest"
+      }
+      http_port = 80
+      instance_size_slug = "basic-xxs"
+      instance_count     = 1
+
+      env {
+        key   = "APP_ENV"
+        value = "production"
+      }
+      env {
+        key   = "APP_KEY"
+        value = var.app_key
+        scope = "RUN_AND_BUILD_TIME"
+      }
+      env {
+        key   = "DB_HOST"
+        value = digitalocean_database_cluster.mysql.host
+      }
+      env {
+        key   = "DB_PORT"
+        value = digitalocean_database_cluster.mysql.port
+      }
+      env {
+        key   = "DB_DATABASE"
+        value = digitalocean_database_db.statamic_db.name
+      }
+      env {
+        key   = "DB_USERNAME"
+        value = digitalocean_database_user.statamic_user.name
+      }
+      env {
+        key   = "DB_PASSWORD"
+        value = digitalocean_database_user.statamic_user.password
+      }
+      env {
+        key   = "REDIS_HOST"
+        value = digitalocean_database_cluster.redis.host
+      }
+      env {
+        key   = "REDIS_PASSWORD"
+        value = digitalocean_database_cluster.redis.password
+      }
+      env {
+        key   = "REDIS_PORT"
+        value = digitalocean_database_cluster.redis.port
+      }
+      env {
+        key   = "SPACES_BUCKET"
+        value = digitalocean_spaces_bucket.spaces.name
+      }
+      env {
+        key   = "AWS_ACCESS_KEY_ID"
+        value = var.spaces_key
+        scope = "RUN_AND_BUILD_TIME"
+      }
+
+        env {
+        key   = "AWS_SECRET_ACCESS_KEY"
+        value = var.spaces_secret
+        scope = "RUN_AND_BUILD_TIME"
+      }
+
+        env {
+        key   = "AWS_BUCKET"
+        value = digitalocean_spaces_bucket.statamic.name
+      }
+        env {
+        key   = "AWS_DEFAULT_REGION"
+        value = var.region
+      }
+        env {
+        key   = "AWS_ENDPOINT"
+        value = "https://${var.spaces_bucket}.${var.region}.digitaloceanspaces.com"
+      }
+    }
+  }
+}

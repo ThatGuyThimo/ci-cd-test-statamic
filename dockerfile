@@ -14,13 +14,13 @@ COPY . .
 RUN npm run build
 
 # ---------------------------
-# Stage 2: PHP + Composer dependencies
+# Stage 2: PHP + Composer + Redis server
 # ---------------------------
 FROM php:8.4-fpm-alpine AS php_builder
 WORKDIR /var/www/html
 
-# Install PHP extensions + Redis extension (optional, will not require server at build)
-RUN apk add --no-cache $PHPIZE_DEPS \
+# Install PHP extensions + Redis extension + Redis server
+RUN apk add --no-cache $PHPIZE_DEPS redis bash \
     && docker-php-ext-install pdo pdo_mysql bcmath \
     && pecl install redis \
     && docker-php-ext-enable redis \
@@ -44,14 +44,14 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 # Expose PHP-FPM port
 EXPOSE 9000
+EXPOSE 6379
 
 # ---------------------------
 # Entrypoint
 # ---------------------------
-# Run post-autoload scripts and Statamic install at runtime (if services available)
 COPY docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY docker/docker-entrypoint-create-user.php /usr/local/bin/docker-entrypoint-create-user.php
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["php-fpm"]
+# Start both Redis and PHP-FPM
+CMD redis-server --bind 127.0.0.1 --daemonize yes && php-fpm

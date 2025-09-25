@@ -1,0 +1,23 @@
+name: statamic-app
+services:
+  - name: web
+    image:
+      registry: "${DOCR_REGISTRY}/statamic-app"
+      tag: latest
+    http_port: 80
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    envs:
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        scope: RUN_AND_BUILD_TIME
+        value: ${APP_KEY}
+      - key: DB_HOST
+        value: ${DB_HOST}
+      - key: DB_DATABASE
+        value: ${DB_DATABASE}
+      - key: DB_USERNAME
+        value: ${DB_USERNAME}
+      - key: DB_PASSWORD
+        value: ${DB_PASSWORD}
