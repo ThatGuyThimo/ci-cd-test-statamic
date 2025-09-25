@@ -68,6 +68,7 @@ resource "digitalocean_app" "statamic" {
       image {
         registry_type = "DOCR"
         registry      = var.app_image
+        repository    = var.app_repository
         tag           = "latest"
       }
       http_port = 80

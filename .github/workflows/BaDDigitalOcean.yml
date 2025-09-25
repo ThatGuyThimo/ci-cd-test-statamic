@@ -76,8 +76,8 @@ jobs:
             -var "db_password=${{ secrets.DB_PASSWORD }}" \
             -var "redis_password=${{ secrets.REDIS_PASSWORD }}" \
             -var "spaces_key=${{ secrets.SPACES_KEY }}" \
+            -var "app_repository=${{ secrets.DOCR_REPOSITORY }}" \
             -var "spaces_secret=${{ secrets.SPACES_SECRET }}" | tee terraform.log
-
       - name: Upload Terraform log
         uses: actions/upload-artifact@v4
         with:

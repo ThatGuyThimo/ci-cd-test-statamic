@@ -15,6 +15,11 @@ variable "app_image" {
   type        = string
 }
 
+variable "app_repository" {
+    description = "App repositroy from DigitalOcean"
+    type        = string
+}
+
 variable "region" {
   description = "DO region"
   default     = "ams3"
