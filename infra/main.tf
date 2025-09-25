@@ -31,7 +31,7 @@ resource "digitalocean_database_db" "statamic_db" {
 resource "digitalocean_database_user" "statamic_user" {
   cluster_id = digitalocean_database_cluster.mysql.id
   name       = var.db_user
-  password   = var.db_password
+  # DO NOT set password, it's auto-managed
 }
 
 # --------------------------
