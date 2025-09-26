@@ -21,6 +21,7 @@ resource "digitalocean_database_cluster" "mysql" {
   size       = "db-s-1vcpu-1gb"
   region     = var.region
   node_count = 1
+  depends_on = [digitalocean_database_cluster.mysql]
 }
 
 resource "digitalocean_database_db" "statamic_db" {
