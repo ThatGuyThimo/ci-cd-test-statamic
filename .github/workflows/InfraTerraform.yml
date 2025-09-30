@@ -37,8 +37,8 @@ jobs:
           terraform apply -auto-approve \
             -var "do_token=${{ secrets.DO_TOKEN }}" \
             -var "app_key=${{ secrets.APP_KEY }}" \
-            -var "app_image=registry.digitalocean.com/migrationtest/statamic-app:latest" \
-            -var "app_repository=statamic-app" \
+            -var "app_image=${{ secrets.DOCR_REGISTRY }}/statamic-app:latest" \
+            -var "app_repository=${{ secrets.DOCR_REPOSITORY }}" \
             -var "db_password=${{ secrets.DB_PASSWORD }}" \
             -var "redis_password=${{ secrets.REDIS_PASSWORD }}" \
             -var "spaces_key=${{ secrets.SPACES_KEY }}" \
