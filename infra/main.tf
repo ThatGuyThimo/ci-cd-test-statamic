@@ -121,10 +121,10 @@ resource "digitalocean_app" "statamic" {
 #        value = digitalocean_database_cluster.redis.port
 #      }
 
-    #   env {
-    #     key   = "SPACES_BUCKET"
-    #     value = digitalocean_spaces_bucket.spaces.name
-    #   }
+      env {
+        key   = "SPACES_BUCKET"
+        value = digitalocean_spaces_bucket.spaces.name
+      }
       env {
         key   = "AWS_ACCESS_KEY_ID"
         value = var.spaces_key
