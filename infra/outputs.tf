@@ -10,6 +10,6 @@ output "mysql_host" {
 #  value = digitalocean_database_cluster.redis.host
 # }
 
-output "spaces_bucket" {
-  value = digitalocean_spaces_bucket.spaces.name
-}
+# output "spaces_bucket" {
+#   value = digitalocean_spaces_bucket.spaces.name
+# }
