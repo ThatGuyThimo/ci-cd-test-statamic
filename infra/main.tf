@@ -70,8 +70,10 @@ resource "digitalocean_app" "statamic" {
       name  = "web"
       image {
         registry_type = "DOCR"
-        registry      = var.app_image
-        repository    = var.app_repository
+        # registry      = var.app_image
+        # repository    = var.app_repository
+        registry      = "registry.digitalocean.com/migrationtest"
+        repository    = "statamic-app"
         tag           = "latest"
       }
       http_port = 80
