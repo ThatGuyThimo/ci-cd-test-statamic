@@ -54,10 +54,10 @@ jobs:
       - name: Set DB envs from Terraform outputs
         id: tf_envs
         run: |
-          DB_HOST=$(jq -r .db_host.value tf_outputs.json)
-          DB_DATABASE=$(jq -r .db_database.value tf_outputs.json)
-          DB_USERNAME=$(jq -r .db_username.value tf_outputs.json)
-          DB_PASSWORD=$(jq -r .db_password.value tf_outputs.json)
+          DB_HOST=$(jq -r .db_host.value infra/tf_outputs.json)
+          DB_DATABASE=$(jq -r .db_database.value infra/tf_outputs.json)
+          DB_USERNAME=$(jq -r .db_username.value infra/tf_outputs.json)
+          DB_PASSWORD=$(jq -r .db_password.value infra/tf_outputs.json)
           echo "DB_HOST=$DB_HOST" >> $GITHUB_ENV
           echo "DB_DATABASE=$DB_DATABASE" >> $GITHUB_ENV
           echo "DB_USERNAME=$DB_USERNAME" >> $GITHUB_ENV
