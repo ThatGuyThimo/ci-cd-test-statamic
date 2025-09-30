@@ -53,11 +53,11 @@ resource "digitalocean_database_user" "statamic_user" {
 # --------------------------
 # DO Spaces / MinIO
 # --------------------------
-resource "digitalocean_spaces_bucket" "spaces" {
-  name   = var.spaces_bucket
-  region = var.region
-  acl    = "private"
-}
+# resource "digitalocean_spaces_bucket" "spaces" {
+#   name   = var.spaces_bucket
+#   region = var.region
+#   acl    = "private"
+# }
 
 # --------------------------
 # App Platform
