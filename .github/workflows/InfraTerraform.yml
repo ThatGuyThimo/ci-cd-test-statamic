@@ -22,6 +22,9 @@ jobs:
       #     export TF_VAR_redis_password="${{ secrets.REDIS_PASSWORD }}"
       #   shell: bash
 
+            # -var "app_image=${{ secrets.DOCR_REGISTRY }}" \
+            # -var "app_repository=${{ secrets.DOCR_REPOSITORY }}" \
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
 
@@ -34,13 +37,11 @@ jobs:
           terraform apply -auto-approve \
             -var "do_token=${{ secrets.DO_TOKEN }}" \
             -var "app_key=${{ secrets.APP_KEY }}" \
-            # -var "app_image=registry.digitalocean.com/migrationtest/statamic-app:latest" \
-            -var "app_image=${{ secrets.DOCR_REGISTRY }}" \
+            -var "app_image=registry.digitalocean.com/migrationtest/statamic-app:latest" \
+            -var "app_repository=statamic-app" \
             -var "db_password=${{ secrets.DB_PASSWORD }}" \
             -var "redis_password=${{ secrets.REDIS_PASSWORD }}" \
             -var "spaces_key=${{ secrets.SPACES_KEY }}" \
-            # -var "app_repository=statamic-app" \
-            -var "app_repository=${{ secrets.DOCR_REPOSITORY }}" \
             -var "spaces_secret=${{ secrets.SPACES_SECRET }}" | tee terraform.log
       - name: Upload Terraform log
         uses: actions/upload-artifact@v4
