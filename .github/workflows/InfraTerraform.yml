@@ -30,11 +30,12 @@ jobs:
           cd infra
           export TF_LOG=DEBUG
           # Don't set TF_LOG_PATH to avoid conflict with tee
+          echo "TF_VAR_app_image=${{ secrets.DOCR_REGISTRY }}"
           terraform init
           terraform apply -auto-approve \
             -var "do_token=${{ secrets.DO_TOKEN }}" \
             -var "app_key=${{ secrets.APP_KEY }}" \
-            -var "app_image=registry.digitalocean.com/migrationtest" \
+            -var "app_image=${{ secrets.DOCR_REGISTRY }}" \
             -var "db_password=${{ secrets.DB_PASSWORD }}" \
             -var "redis_password=${{ secrets.REDIS_PASSWORD }}" \
             -var "spaces_key=${{ secrets.SPACES_KEY }}" \
