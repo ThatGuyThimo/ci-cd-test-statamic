@@ -107,6 +107,7 @@ resource "digitalocean_app" "statamic" {
         key   = "DB_PASSWORD"
         value = digitalocean_database_user.statamic_user.password
       }
+
 #      env {
 #        key   = "REDIS_HOST"
 #        value = digitalocean_database_cluster.redis.host
@@ -119,10 +120,11 @@ resource "digitalocean_app" "statamic" {
 #        key   = "REDIS_PORT"
 #        value = digitalocean_database_cluster.redis.port
 #      }
-      env {
-        key   = "SPACES_BUCKET"
-        value = digitalocean_spaces_bucket.spaces.name
-      }
+
+    #   env {
+    #     key   = "SPACES_BUCKET"
+    #     value = digitalocean_spaces_bucket.spaces.name
+    #   }
       env {
         key   = "AWS_ACCESS_KEY_ID"
         value = var.spaces_key
@@ -133,10 +135,10 @@ resource "digitalocean_app" "statamic" {
         value = var.spaces_secret
         scope = "RUN_AND_BUILD_TIME"
       }
-      env {
-        key   = "AWS_BUCKET"
-        value = digitalocean_spaces_bucket.spaces.name
-      }
+    #   env {
+    #     key   = "AWS_BUCKET"
+    #     value = digitalocean_spaces_bucket.spaces.name
+    #   }
       env {
         key   = "AWS_DEFAULT_REGION"
         value = var.region
