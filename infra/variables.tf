@@ -25,6 +25,16 @@ variable "region" {
   default     = "ams3"
 }
 
+variable "cluster_name" {
+  description = "Database cluster name"
+  default     = "statamic-mysql"
+}
+
+variable "cluster_size" {
+  description = "Database cluster size"
+  default     = "db-s-1vcpu-1gb"
+}
+
 variable "db_name" {
   description = "Database name"
   default     = "statamic"

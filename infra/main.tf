@@ -8,17 +8,19 @@ terraform {
 }
 
 provider "digitalocean" {
-  token = var.do_token
+  token                  = var.do_token
+  spaces_access_id       = var.spaces_key
+  spaces_secret_key      = var.spaces_secret
 }
 
 # --------------------------
 # Managed MySQL
 # --------------------------
 resource "digitalocean_database_cluster" "mysql" {
-  name       = "statamic-mysql"
+  name       = var.cluster_name
   engine     = "mysql"
   version    = "8"
-  size       = "db-s-1vcpu-1gb"
+  size       = var.cluster_size
   region     = var.region
   node_count = 1
   depends_on = [digitalocean_database_cluster.mysql]
