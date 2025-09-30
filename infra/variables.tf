@@ -57,7 +57,7 @@ variable "redis_password" {
 
 variable "spaces_bucket" {
   description = "DO Spaces bucket name"
-  default     = "statamic-bucket-1"
+  default     = "statamic-bucket-one"
 }
 
 variable "spaces_key" {
