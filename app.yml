@@ -2,7 +2,7 @@ name: statamic-app
 services:
   - name: web
     image:
-      registry: "${DOCR_REGISTRY}/statamic-app"
+      registry: "${{ secrets.DOCR_REGISTRY }}/statamic-app"
       tag: latest
     http_port: 80
     instance_size_slug: basic-xxs

@@ -34,7 +34,7 @@ jobs:
           terraform apply -auto-approve \
             -var "do_token=${{ secrets.DO_TOKEN }}" \
             -var "app_key=${{ secrets.APP_KEY }}" \
-            -var "app_image=${{ secrets.DOCR_REGISTRY }}/statamic-app:latest" \
+            -var "app_image=registry.digitalocean.com/migrationtest" \
             -var "db_password=${{ secrets.DB_PASSWORD }}" \
             -var "redis_password=${{ secrets.REDIS_PASSWORD }}" \
             -var "spaces_key=${{ secrets.SPACES_KEY }}" \
@@ -62,3 +62,33 @@ jobs:
           echo "DB_DATABASE=$DB_DATABASE" >> $GITHUB_ENV
           echo "DB_USERNAME=$DB_USERNAME" >> $GITHUB_ENV
           echo "DB_PASSWORD=$DB_PASSWORD" >> $GITHUB_ENV
+
+# This file should be generated dynamically in your CI pipeline using values from your .env or GitHub Actions secrets.
+# Example generation step in GitHub Actions:
+      - name: Generate app.yml
+        run: |
+          cat <<EOF > app.yml
+          name: statamic-app
+          services:
+            - name: web
+              image:
+                registry: "${{ secrets.DOCR_REGISTRY }}/statamic-app"
+                tag: latest
+              http_port: 80
+              instance_size_slug: basic-xxs
+              instance_count: 1
+              envs:
+                - key: APP_ENV
+                  value: "${{ secrets.APP_ENV }}"
+                - key: APP_KEY
+                  scope: RUN_AND_BUILD_TIME
+                  value: "${{ secrets.APP_KEY }}"
+                - key: DB_HOST
+                  value: "${{ secrets.DB_HOST }}"
+                - key: DB_DATABASE
+                  value: "${{ secrets.DB_DATABASE }}"
+                - key: DB_USERNAME
+                  value: "${{ secrets.DB_USERNAME }}"
+                - key: DB_PASSWORD
+                  value: "${{ secrets.DB_PASSWORD }}"
+          EOF
