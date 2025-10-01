@@ -78,7 +78,7 @@ resource "digitalocean_app" "statamic" {
         repository    = "statamic-app"
         tag           = "latest"
 
-        registry_credentials {
+        registry_credentials = {
           username = "do"               # Fixed value for DOCR
           password = var.do_token
         }
