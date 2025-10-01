@@ -69,16 +69,17 @@ resource "digitalocean_app" "statamic" {
 
     service {
       name  = "web"
-      environment_slug = "docker"
+
       image {
         registry_type = "DOCR"
-        registry      = var.app_image
-        repository    = var.app_repository
-        # registry      = "registry.digitalocean.com/migration"
-        # repository    = "statamic-app"
+        # registry      = var.app_image
+        # repository    = var.app_repository
+        registry      = "registry.digitalocean.com/migration"
+        repository    = "statamic-app"
         tag           = "latest"
       }
-      http_port = 80
+      
+      http_port = 8080
       instance_size_slug = "basic-xxs"
       instance_count     = 1
 
