@@ -77,8 +77,13 @@ resource "digitalocean_app" "statamic" {
         registry      = "registry.digitalocean.com/migration"
         repository    = "statamic-app"
         tag           = "latest"
+
+        registry_credentials {
+          username = "do"               # Fixed value for DOCR
+          password = var.do_token
+        }
       }
-      
+
       http_port = 8080
       instance_size_slug = "basic-xxs"
       instance_count     = 1
