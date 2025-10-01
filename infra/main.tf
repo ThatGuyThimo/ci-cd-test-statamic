@@ -72,7 +72,7 @@ resource "digitalocean_app" "statamic" {
       environment_slug = "docker"
       image {
         registry_type = "DOCR"
-        # registry      = var.app_image
+        registry      = var.app_image
         repository    = var.app_repository
         # registry      = "registry.digitalocean.com/migration"
         # repository    = "statamic-app"
