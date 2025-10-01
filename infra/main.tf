@@ -70,8 +70,8 @@ resource "digitalocean_app" "statamic" {
       name  = "web"
       image {
         registry_type = "DOCR"
-        # registry      = var.app_image
-        # repository    = var.app_repository
+        registry      = var.app_image
+        repository    = var.app_repository
         # registry      = "registry.digitalocean.com/migrationtest"
         # repository    = "statamic-app"
         tag           = "latest"
@@ -89,26 +89,26 @@ resource "digitalocean_app" "statamic" {
         value = var.app_key
         scope = "RUN_AND_BUILD_TIME"
       }
-      env {
-        key   = "DB_HOST"
-        value = digitalocean_database_cluster.mysql.host
-      }
-      env {
-        key   = "DB_PORT"
-        value = digitalocean_database_cluster.mysql.port
-      }
-      env {
-        key   = "DB_DATABASE"
-        value = digitalocean_database_db.statamic_db.name
-      }
-      env {
-        key   = "DB_USERNAME"
-        value = digitalocean_database_user.statamic_user.name
-      }
-      env {
-        key   = "DB_PASSWORD"
-        value = digitalocean_database_user.statamic_user.password
-      }
+    #   env {
+    #     key   = "DB_HOST"
+    #     value = digitalocean_database_cluster.mysql.host
+    #   }
+    #   env {
+    #     key   = "DB_PORT"
+    #     value = digitalocean_database_cluster.mysql.port
+    #   }
+    #   env {
+    #     key   = "DB_DATABASE"
+    #     value = digitalocean_database_db.statamic_db.name
+    #   }
+    #   env {
+    #     key   = "DB_USERNAME"
+    #     value = digitalocean_database_user.statamic_user.name
+    #   }
+    #   env {
+    #     key   = "DB_PASSWORD"
+    #     value = digitalocean_database_user.statamic_user.password
+    #   }
 
 #      env {
 #        key   = "REDIS_HOST"
