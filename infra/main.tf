@@ -78,10 +78,7 @@ resource "digitalocean_app" "statamic" {
         repository    = "statamic-app"
         tag           = "latest"
 
-        registry_credentials = {
-          username = "do"               # Fixed value for DOCR
-          password = var.do_token
-        }
+        registry_credentials = thimo@rox.nl:var.do_token
       }
 
       http_port = 8080
