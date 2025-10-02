@@ -62,38 +62,37 @@ provider "digitalocean" {
 # --------------------------
 # App Platform
 # --------------------------
-resource "digitalocean_app" "statamic" {
-  spec {
-    name = "statamic-app"
-    region = var.region
+# resource "digitalocean_app" "statamic" {
+#   spec {
+#     name = "statamic-app"
+#     region = var.region
 
-    service {
-      name  = "web"
+#     service {
+#       name  = "web"
 
-      image {
-        registry_type = "DOCR"
-        # registry      = var.app_image
-        # repository    = var.app_repository
-        registry      = "registry.digitalocean.com/migration"
-        repository    = "statamic-app"
-        tag           = "latest"
+#       image {
+#         registry_type = "DOCR"
+#         # registry      = var.app_image
+#         # repository    = var.app_repository
+#         registry      = "registry.digitalocean.com/migration"
+#         repository    = "statamic-app"
+#         tag           = "latest"
 
-        registry_credentials = "do":var.do_token
-        }
+#         }
 
-      http_port = 8080
-      instance_size_slug = "basic-xxs"
-      instance_count     = 1
+#       http_port = 8080
+#       instance_size_slug = "basic-xxs"
+#       instance_count     = 1
 
-      env {
-        key   = "APP_ENV"
-        value = "production"
-      }
-      env {
-        key   = "APP_KEY"
-        value = var.app_key
-        scope = "RUN_AND_BUILD_TIME"
-      }
+#       env {
+#         key   = "APP_ENV"
+#         value = "production"
+#       }
+#       env {
+#         key   = "APP_KEY"
+#         value = var.app_key
+#         scope = "RUN_AND_BUILD_TIME"
+#       }
     #   env {
     #     key   = "DB_HOST"
     #     value = digitalocean_database_cluster.mysql.host
@@ -132,28 +131,28 @@ resource "digitalocean_app" "statamic" {
     #     key   = "SPACES_BUCKET"
     #     value = digitalocean_spaces_bucket.spaces.name
     #   }
-      env {
-        key   = "AWS_ACCESS_KEY_ID"
-        value = var.spaces_key
-        scope = "RUN_AND_BUILD_TIME"
-      }
-      env {
-        key   = "AWS_SECRET_ACCESS_KEY"
-        value = var.spaces_secret
-        scope = "RUN_AND_BUILD_TIME"
-      }
-    #   env {
-    #     key   = "AWS_BUCKET"
-    #     value = digitalocean_spaces_bucket.spaces.name
-    #   }
-      env {
-        key   = "AWS_DEFAULT_REGION"
-        value = var.region
-      }
-      env {
-        key   = "AWS_ENDPOINT"
-        value = "https://${var.spaces_bucket}.${var.region}.digitaloceanspaces.com"
-      }
-    }
-  }
-}
+#       env {
+#         key   = "AWS_ACCESS_KEY_ID"
+#         value = var.spaces_key
+#         scope = "RUN_AND_BUILD_TIME"
+#       }
+#       env {
+#         key   = "AWS_SECRET_ACCESS_KEY"
+#         value = var.spaces_secret
+#         scope = "RUN_AND_BUILD_TIME"
+#       }
+#     #   env {
+#     #     key   = "AWS_BUCKET"
+#     #     value = digitalocean_spaces_bucket.spaces.name
+#     #   }
+#       env {
+#         key   = "AWS_DEFAULT_REGION"
+#         value = var.region
+#       }
+#       env {
+#         key   = "AWS_ENDPOINT"
+#         value = "https://${var.spaces_bucket}.${var.region}.digitaloceanspaces.com"
+#       }
+#     }
+#   }
+# }
