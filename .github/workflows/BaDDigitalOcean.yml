@@ -125,6 +125,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Download app.yaml artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-spec
+
       - name: Install doctl
         run: |
           curl -sL https://github.com/digitalocean/doctl/releases/download/v1.107.0/doctl-1.107.0-linux-amd64.tar.gz \
