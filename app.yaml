@@ -1,26 +1,26 @@
-name: statamic-app
-services:
-  - name: web
-    image:
-      registry: "${{ secrets.DOCR_REGISTRY }}/statamic-app"
-      tag: latest
-    http_port: 80
-    instance_size_slug: basic-xxs
-    instance_count: 1
-    envs:
-      - key: APP_ENV
-        value: ${{ secrets.APP_ENV }}
-      - key: APP_KEY
-        scope: RUN_AND_BUILD_TIME
-        value: ${{ secrets.APP_KEY }}
-      - key: DB_HOST
-        value: ${{ secrets.DB_HOST }}
-      - key: DB_DATABASE
-        value: ${{ secrets.DB_DATABASE }}
-      - key: DB_USERNAME
-        value: ${{ secrets.DB_USERNAME }}
-      - key: DB_PASSWORD
-        value: ${{ secrets.DB_PASSWORD }}
+# name: statamic-app
+# services:
+#   - name: web
+#     image:
+#       registry: "${{ secrets.DOCR_REGISTRY }}/statamic-app"
+#       tag: latest
+#     http_port: 80
+#     instance_size_slug: basic-xxs
+#     instance_count: 1
+#     envs:
+#       - key: APP_ENV
+#         value: ${{ secrets.APP_ENV }}
+#       - key: APP_KEY
+#         scope: RUN_AND_BUILD_TIME
+#         value: ${{ secrets.APP_KEY }}
+#       - key: DB_HOST
+#         value: ${{ secrets.DB_HOST }}
+#       - key: DB_DATABASE
+#         value: ${{ secrets.DB_DATABASE }}
+#       - key: DB_USERNAME
+#         value: ${{ secrets.DB_USERNAME }}
+#       - key: DB_PASSWORD
+#         value: ${{ secrets.DB_PASSWORD }}
 
 # This file should be generated dynamically in your CI pipeline using values from your .env or GitHub Actions secrets.
 # Example generation step in GitHub Actions:
