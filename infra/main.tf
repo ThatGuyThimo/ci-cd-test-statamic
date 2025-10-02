@@ -16,26 +16,26 @@ provider "digitalocean" {
 # --------------------------
 # Managed MySQL
 # --------------------------
-# resource "digitalocean_database_cluster" "mysql" {
-#   name       = var.cluster_name
-#   engine     = "mysql"
-#   version    = "8"
-#   size       = var.cluster_size
-#   region     = var.region
-#   node_count = 1
-#   depends_on = [digitalocean_database_cluster.mysql]
-# }
+resource "digitalocean_database_cluster" "mysql" {
+  name       = var.cluster_name
+  engine     = "mysql"
+  version    = "8"
+  size       = var.cluster_size
+  region     = var.region
+  node_count = 1
+  depends_on = [digitalocean_database_cluster.mysql]
+}
 
-# resource "digitalocean_database_db" "statamic_db" {
-#   cluster_id = digitalocean_database_cluster.mysql.id
-#   name       = var.db_name
-# }
+resource "digitalocean_database_db" "statamic_db" {
+  cluster_id = digitalocean_database_cluster.mysql.id
+  name       = var.db_name
+}
 
-# resource "digitalocean_database_user" "statamic_user" {
-#   cluster_id = digitalocean_database_cluster.mysql.id
-#   name       = var.db_user
-#   # DO NOT set password, it's auto-managed
-# }
+resource "digitalocean_database_user" "statamic_user" {
+  cluster_id = digitalocean_database_cluster.mysql.id
+  name       = var.db_user
+  # DO NOT set password, it's auto-managed
+}
 
 # --------------------------
 # Managed Redis
@@ -53,14 +53,16 @@ provider "digitalocean" {
 # --------------------------
 # DO Spaces / MinIO
 # --------------------------
-# resource "digitalocean_spaces_bucket" "spaces" {
-#   name   = var.spaces_bucket
-#   region = var.region
-#   acl    = "private"
-# }
+resource "digitalocean_spaces_bucket" "spaces" {
+  name   = var.spaces_bucket
+  region = var.region
+  acl    = "private"
+}
+
+
 
 # --------------------------
-# App Platform
+# App Platform | DO NOT USE is currently broken and handled via BaD GitHub Actions
 # --------------------------
 # resource "digitalocean_app" "statamic" {
 #   spec {
