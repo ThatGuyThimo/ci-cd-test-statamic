@@ -1,6 +1,6 @@
-output "app_url" {
-  value = digitalocean_app.statamic.live_url
-}
+# output "app_url" {
+#   value = digitalocean_app.statamic.live_url
+# }
 
 # output "mysql_host" {
 #   value = digitalocean_database_cluster.mysql.host
