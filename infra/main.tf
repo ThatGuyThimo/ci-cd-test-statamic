@@ -41,15 +41,15 @@ provider "digitalocean" {
 # Managed Redis
 # --------------------------
 
-resource "digitalocean_database_cluster" "redis" {
-  name       = "statamic-redis"
-  engine     = "redis"
-  version    = "7"
-  size       = "db-s-1vcpu-1gb"
-  region     = var.region
-  node_count = 1
-  # do not set a password, it's auto-managed
-}
+# resource "digitalocean_database_cluster" "redis" {
+#   name       = "statamic-redis"
+#   engine     = "redis"
+#   version    = "7"
+#   size       = "db-s-1vcpu-1gb"
+#   region     = var.region
+#   node_count = 1
+#   # do not set a password, it's auto-managed
+# }
 
 # --------------------------
 # DO Spaces / MinIO
@@ -115,18 +115,18 @@ resource "digitalocean_app" "statamic" {
     #     value = digitalocean_database_user.statamic_user.password
     #   }
 
-      env {
-        key   = "REDIS_HOST"
-        value = digitalocean_database_cluster.redis.host
-      }
-      env {
-        key   = "REDIS_PASSWORD"
-        value = digitalocean_database_cluster.redis.password
-      }
-      env {
-        key   = "REDIS_PORT"
-        value = digitalocean_database_cluster.redis.port
-      }
+      # env {
+      #   key   = "REDIS_HOST"
+      #   value = digitalocean_database_cluster.redis.host
+      # }
+      # env {
+      #   key   = "REDIS_PASSWORD"
+      #   value = digitalocean_database_cluster.redis.password
+      # }
+      # env {
+      #   key   = "REDIS_PORT"
+      #   value = digitalocean_database_cluster.redis.port
+      # }
 
     #   env {
     #     key   = "SPACES_BUCKET"
