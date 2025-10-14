@@ -48,7 +48,7 @@ resource "digitalocean_database_cluster" "redis" {
   size       = "db-s-1vcpu-1gb"
   region     = var.region
   node_count = 1
-  password   = var.redis_password
+  # do not set a password, it's auto-managed
 }
 
 # --------------------------
