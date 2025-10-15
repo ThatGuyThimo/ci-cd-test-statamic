@@ -46,11 +46,11 @@ resource "digitalocean_app" "statamic" {
         value = var.aws_endpoint
         scope = "RUN_AND_BUILD_TIME"
       }
-    #   env {
-    #     key   = "APP_URL"
-    #     value = var.app_url
-    #     scope = "RUN_AND_BUILD_TIME"
-    #   }
+      env {
+        key   = "APP_URL"
+        value = var.app_url
+        scope = "RUN_AND_BUILD_TIME"
+      }
     }
   }
 }
