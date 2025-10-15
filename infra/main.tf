@@ -19,6 +19,9 @@ provider "digitalocean" {
 # --------------------------
 module "mysql" {
   source       = "./modules/mysql"
+  providers = {
+    digitalocean = digitalocean
+  }
   cluster_name = var.cluster_name
   cluster_size = var.cluster_size
   db_name      = var.db_name
@@ -46,6 +49,9 @@ module "mysql" {
 # --------------------------
 module "spaces" {
   source        = "./modules/spaces"
+  providers = {
+    digitalocean = digitalocean
+  }
   spaces_bucket = var.spaces_bucket
   region        = var.region
 }
@@ -56,6 +62,9 @@ module "spaces" {
 # --------------------------
 module "app" {
   source        = "./modules/app"
+  providers = {
+    digitalocean = digitalocean
+  }
   region        = var.region
   repository    = "statamic-app" # or pass as a variable if dynamic
   image_tag     = "latest"       # or pass as a variable if dynamic
