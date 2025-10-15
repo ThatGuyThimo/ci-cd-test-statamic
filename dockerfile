@@ -99,6 +99,8 @@ USER root
 RUN echo "user = www-data" >> /usr/local/etc/php-fpm.d/docker-php-serversideup-pool.conf && \
     echo "group = www-data" >> /usr/local/etc/php-fpm.d/docker-php-serversideup-pool.conf
 
+EXPOSE 80
+
 ############################################
 # Production Image
 ############################################

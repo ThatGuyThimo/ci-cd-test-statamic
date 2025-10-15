@@ -68,10 +68,10 @@ module "app" {
   region        = var.region
   repository    = "statamic-app" # or pass as a variable if dynamic
   image_tag     = "latest"       # or pass as a variable if dynamic
-  app_env       = "development"
+  app_env       = "production"
   app_key       = var.app_key
   spaces_key    = var.spaces_key
   spaces_secret = var.spaces_secret
   aws_endpoint  = "https://${var.spaces_bucket}.${var.region}.digitaloceanspaces.com"
-  # app_url       = var.app_url
+  app_url       = var.app_url
 }
