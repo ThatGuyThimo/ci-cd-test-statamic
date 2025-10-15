@@ -1,6 +1,9 @@
-
 output "app_url" {
   value = module.app.app_id # Or use another output from the app module if you want the live_url
+}
+
+output "app_live_url" {
+  value = module.app.live_url
 }
 
 # output "mysql_host" {

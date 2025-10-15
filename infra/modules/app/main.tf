@@ -6,13 +6,13 @@ resource "digitalocean_app" "statamic" {
     service {
       name  = "web"
 
-      image {
+      image {ß
         registry_type = "DOCR"
         repository    = var.repository
         tag           = var.image_tag
       }
 
-      http_port = 8080
+      http_port = 80
       instance_size_slug = "basic-xxs"
       instance_count     = 1
 
@@ -43,6 +43,10 @@ resource "digitalocean_app" "statamic" {
       env {
         key   = "AWS_ENDPOINT"
         value = var.aws_endpoint
+      }
+      env {
+        key   = "APP_URL"
+        value = var.app_url
       }
     }
   }
