@@ -12,7 +12,7 @@ resource "digitalocean_app" "statamic" {
         tag           = var.image_tag
       }
 
-      http_port = 80
+      http_port = 8080
       instance_size_slug = "basic-xxs"
       instance_count     = 1
 
