@@ -121,6 +121,10 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 RUN composer install --optimize-autoloader --no-interaction --no-scripts
 
+# Build Statamic CP assets
+RUN php please statamic:build
+
+
 # Switch to www-data user for the rest of the operations
 USER www-data
 
@@ -128,7 +132,7 @@ USER www-data
 RUN npm install
 RUN npm run build
 # Publish Statamic control panel assets (ensure Vite manifest is present)
-RUN php please cp:assets:publish || true
+# RUN php please cp:assets:publish || true
 RUN rm -rf node_modules
 
 # Expose port 8080 to match DigitalOcean App Platform config
