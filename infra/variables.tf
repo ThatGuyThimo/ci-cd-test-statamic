@@ -75,6 +75,6 @@ variable "spaces_secret" {
 variable "app_url" {
   description = "the url the app expects to be hosted on"
   type        = string
-  default     = "http://localhost"
+  default     = ""
   sensitive   = false
 }
