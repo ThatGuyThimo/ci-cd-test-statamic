@@ -115,27 +115,22 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
 COPY --chown=www-data:www-data . /var/www/html
 RUN rm -rf /var/www/html/node_modules
 
-# Copy over set-env script so environment variables are set on runtime https://learn.microsoft.com/en-us/answers/questions/1648397/azure-container-app-service-environment-variables
-#COPY --chmod=755 .docker/scripts/11-set-env.sh /etc/entrypoint.d/
-
-#ENV PHP_OPCACHE_ENABLE=1
-#ENV AUTORUN_ENABLE=1
-#ENV AUTORUN_LARAVEL_MIGRATION_ISOLATION=1
-
 # Switch to www-data user for the rest of the operations
 USER www-data
-
-# Install npm dependencies and build frontend assets
 WORKDIR /var/www/html
 
-# Install node dependencies and build for production
+# Install npm dependencies and build frontend assets
 RUN npm install
 RUN npm run build
+# Publish Statamic control panel assets (ensure Vite manifest is present)
+RUN php please cp:assets:publish || true
 RUN rm -rf node_modules
 
 # Install Composer dependencies
+USER root
 COPY composer.json composer.lock ./
 RUN composer install --optimize-autoloader --no-interaction --no-scripts
-# RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+USER www-data
 
+# Expose port 8080 to match DigitalOcean App Platform config
 EXPOSE 8080
