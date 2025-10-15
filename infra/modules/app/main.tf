@@ -6,7 +6,7 @@ resource "digitalocean_app" "statamic" {
     service {
       name  = "web"
 
-      image {ß
+      image {
         registry_type = "DOCR"
         repository    = var.repository
         tag           = var.image_tag
