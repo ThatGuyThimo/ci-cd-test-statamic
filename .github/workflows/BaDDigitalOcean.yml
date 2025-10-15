@@ -119,42 +119,42 @@ jobs:
 
 
 
-set-app-url-and-redeploy:
-  runs-on: ubuntu-latest
-  needs: terraform
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  set-app-url-and-redeploy:
+    runs-on: ubuntu-latest
+    needs: terraform
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Download Terraform log (state)
-      uses: actions/download-artifact@v4
-      with:
-        name: terraform-log
-        path: infra
+      - name: Download Terraform log (state)
+        uses: actions/download-artifact@v4
+        with:
+          name: terraform-log
+          path: infra
 
-    - name: Install Terraform
-      uses: hashicorp/setup-terraform@v2
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
 
-    - name: Get App Live URL from Terraform output
-      id: get_url
-      run: |
-        cd infra
-        terraform init
-        APP_URL=$(terraform output -raw app_live_url)
-        echo "APP_URL=$APP_URL" >> $GITHUB_ENV
+      - name: Get App Live URL from Terraform output
+        id: get_url
+        run: |
+          cd infra
+          terraform init
+          APP_URL=$(terraform output -raw app_live_url)
+          echo "APP_URL=$APP_URL" >> $GITHUB_ENV
 
-    - name: Redeploy with correct APP_URL
-      run: |
-        cd infra
-        export TF_LOG=DEBUG
-        terraform apply -auto-approve \
-          -var "do_token=${{ secrets.DO_TOKEN }}" \
-          -var "app_key=${{ secrets.APP_KEY }}" \
-          -var "app_image=${{ secrets.DOCR_REGISTRY }}/statamic-app:latest" \
-          -var "db_password=${{ secrets.DB_PASSWORD }}" \
-          -var "region=${{ secrets.REGION }}" \
-          -var "redis_password=${{ secrets.REDIS_PASSWORD }}" \
-          -var "spaces_key=${{ secrets.SPACES_KEY }}" \
-          -var "app_repository=${{ secrets.DOCR_REPOSITORY }}" \
-          -var "spaces_secret=${{ secrets.SPACES_SECRET }}" \
-          -var "app_url=${{ env.APP_URL }}" | tee terraform.log
+      - name: Redeploy with correct APP_URL
+        run: |
+          cd infra
+          export TF_LOG=DEBUG
+          terraform apply -auto-approve \
+            -var "do_token=${{ secrets.DO_TOKEN }}" \
+            -var "app_key=${{ secrets.APP_KEY }}" \
+            -var "app_image=${{ secrets.DOCR_REGISTRY }}/statamic-app:latest" \
+            -var "db_password=${{ secrets.DB_PASSWORD }}" \
+            -var "region=${{ secrets.REGION }}" \
+            -var "redis_password=${{ secrets.REDIS_PASSWORD }}" \
+            -var "spaces_key=${{ secrets.SPACES_KEY }}" \
+            -var "app_repository=${{ secrets.DOCR_REPOSITORY }}" \
+            -var "spaces_secret=${{ secrets.SPACES_SECRET }}" \
+            -var "app_url=${{ env.APP_URL }}" | tee terraform.log
