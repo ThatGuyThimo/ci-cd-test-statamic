@@ -47,7 +47,7 @@ jobs:
 # Provision infrastructure with Terraform
   terraform:
     runs-on: ubuntu-latest
-    # needs: build
+    needs: build
     steps:
 
       - name: Checkout code
