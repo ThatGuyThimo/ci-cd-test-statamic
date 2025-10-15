@@ -137,4 +137,4 @@ COPY composer.json composer.lock ./
 RUN composer install --optimize-autoloader --no-interaction --no-scripts
 # RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
-EXPOSE 8080
+EXPOSE 80
