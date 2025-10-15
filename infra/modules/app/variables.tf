@@ -30,6 +30,6 @@ variable "aws_endpoint" {
   type = string
 }
 
-variable "app_url" {
-  type = string
-}
+# variable "app_url" {
+#   type = string
+# }
