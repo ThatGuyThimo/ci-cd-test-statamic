@@ -105,6 +105,7 @@ RUN echo "user = www-data" >> /usr/local/etc/php-fpm.d/docker-php-serversideup-p
 ############################################
 FROM base AS production
 
+
 # Install Node.js 22
 USER root
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
@@ -115,9 +116,13 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
 COPY --chown=www-data:www-data . /var/www/html
 RUN rm -rf /var/www/html/node_modules
 
+# Install Composer dependencies first (Statamic CLI/assets must exist before asset publishing)
+WORKDIR /var/www/html
+COPY composer.json composer.lock ./
+RUN composer install --optimize-autoloader --no-interaction --no-scripts
+
 # Switch to www-data user for the rest of the operations
 USER www-data
-WORKDIR /var/www/html
 
 # Install npm dependencies and build frontend assets
 RUN npm install
@@ -125,12 +130,6 @@ RUN npm run build
 # Publish Statamic control panel assets (ensure Vite manifest is present)
 RUN php please cp:assets:publish || true
 RUN rm -rf node_modules
-
-# Install Composer dependencies
-USER root
-COPY composer.json composer.lock ./
-RUN composer install --optimize-autoloader --no-interaction --no-scripts
-USER www-data
 
 # Expose port 8080 to match DigitalOcean App Platform config
 EXPOSE 8080
