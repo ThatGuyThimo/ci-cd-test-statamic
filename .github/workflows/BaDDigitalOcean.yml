@@ -140,8 +140,13 @@ jobs:
         run: |
           cd infra
           terraform init
-          APP_URL=$(terraform output -raw app_live_url)
-          echo "APP_URL=$APP_URL" >> $GITHUB_ENV
+          APP_URL=$(terraform output -raw app_live_url 2>/dev/null)
+          if [ -n "$APP_URL" ]; then
+            echo "APP_URL=$APP_URL" >> $GITHUB_ENV
+          else
+            echo "Failed to get APP_URL from terraform output" >&2
+            exit 1
+          fi
 
       - name: Redeploy with correct APP_URL
         run: |
