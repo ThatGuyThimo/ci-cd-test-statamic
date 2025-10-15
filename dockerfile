@@ -122,7 +122,8 @@ COPY composer.json composer.lock ./
 RUN composer install --optimize-autoloader --no-interaction --no-scripts
 
 # Build Statamic CP assets
-RUN php please statamic:build
+# RUN php please statamic:build
+RUN php please cp:assets:publish || true
 
 
 # Switch to www-data user for the rest of the operations
