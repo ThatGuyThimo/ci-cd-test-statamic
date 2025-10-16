@@ -123,8 +123,9 @@ RUN composer install --optimize-autoloader --no-interaction --no-scripts
 
 # Build Statamic CP assets
 # RUN php please statamic:build
-RUN php please cp:assets:publish || true
+# RUN php please cp:assets:publish || true
 
+RUN mkdir -p /var/log/nginx && chown -R www-data:www-data /var/log/nginx
 
 # Switch to www-data user for the rest of the operations
 USER www-data
@@ -133,7 +134,8 @@ USER www-data
 RUN npm install
 RUN npm run build
 # Publish Statamic control panel assets (ensure Vite manifest is present)
-# RUN php please cp:assets:publish || true
+# RUN php please assets:publish || true
+# RUN php please statamic:build
 RUN rm -rf node_modules
 
 # Expose port 8080 to match DigitalOcean App Platform config

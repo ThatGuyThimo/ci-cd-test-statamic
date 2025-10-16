@@ -44,12 +44,11 @@ jobs:
       #       ${{ secrets.DOCR_REGISTRY }}/statamic-minio:${{ github.ref_name }}
       #       ${{ secrets.DOCR_REGISTRY }}/statamic-minio:latest
 
-# Provision infrastructure with Terraform
+  # Provision infrastructure with Terraform
   terraform:
     runs-on: ubuntu-latest
     needs: build
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -64,7 +63,7 @@ jobs:
                 registry_type: DOCR
                 repository: ${{ secrets.DOCR_REPOSITORY }}
                 tag: latest
-              http_port: 80
+              http_port: 8080
               instance_size_slug: basic-xxs
               instance_count: 1
               envs:
@@ -81,6 +80,10 @@ jobs:
                   value: "${{ secrets.DB_USERNAME }}"
                 - key: DB_PASSWORD
                   value: "${{ secrets.DB_PASSWORD }}"
+                - key: APP_DEBUG
+                  value: "${{ secrets.APP_DEBUG }}"
+                - key: LOG_LEVEL
+                  value: "${{ secrets.LOG_LEVEL }}"
           EOF
 
       - name: Print app.yaml contents
@@ -110,14 +113,19 @@ jobs:
             -var "redis_password=${{ secrets.REDIS_PASSWORD }}" \
             -var "spaces_key=${{ secrets.SPACES_KEY }}" \
             -var "app_repository=${{ secrets.DOCR_REPOSITORY }}" \
+            -var "aws_endpoint=${{ secrets.AWS_ENDPOINT }}" \
+            -var "db_connection=${{ secrets.DB_CONNECTION }}" \
+            -var "db_host=${{ secrets.DB_HOST }}" \
+            -var "db_port=${{ secrets.DB_PORT }}" \
+            -var "db_name=${{ secrets.DB_DATABASE }}" \
+            -var "db_user=${{ secrets.DB_USERNAME }}" \
+            -var "app_debug=${{ variables.APP_DEBUG }}" \
             -var "spaces_secret=${{ secrets.SPACES_SECRET }}" | tee terraform.log
       - name: Upload Terraform log
         uses: actions/upload-artifact@v4
         with:
           name: terraform-log
           path: infra/terraform.log
-
-
 
   set-app-url-and-redeploy:
     runs-on: ubuntu-latest

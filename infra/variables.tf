@@ -50,6 +50,24 @@ variable "db_password" {
   sensitive   = true
 }
 
+variable "db_connection" {
+  description = "The database connection type"
+  type        = string
+  default     = "mysql"
+}
+
+variable "db_host" {
+  description = "The database host"
+  type        = string
+  default     = "localhost"
+}
+
+variable "db_port" {
+  description = "The database port"
+  type        = number
+  default     = 3306
+}
+
 variable "redis_password" {
   description = "Redis password"
   sensitive   = true
@@ -77,4 +95,34 @@ variable "app_url" {
   type        = string
   default     = "http://localhost"
   sensitive   = false
+}
+
+variable "app_debug" {
+  description = "Enable or disable debug mode"
+  type        = bool
+  default     = false
+}
+
+variable "log_level" {
+  description = "The logging level for the application"
+  type        = string
+  default     = "debug"
+}
+
+variable "session_driver" {
+  description = "The session driver for the application"
+  type        = string
+  default     = "file"
+}
+
+variable "session_lifetime" {
+  description = "The session lifetime for the application"
+  type        = number
+  default     = 120
+}
+
+variable "session_encrypt" {
+  description = "Enable or disable session encryption"
+  type        = bool
+  default     = false
 }
