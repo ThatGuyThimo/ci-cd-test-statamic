@@ -118,6 +118,7 @@ RUN rm -rf /var/www/html/node_modules
 
 # Install Composer dependencies first (Statamic CLI/assets must exist before asset publishing)
 WORKDIR /var/www/html
+ENV COMPOSER_ALLOW_SUPERUSER=1
 COPY composer.json composer.lock ./
 RUN composer install --optimize-autoloader --no-interaction --no-scripts
 
