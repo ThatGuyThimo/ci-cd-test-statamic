@@ -35,6 +35,11 @@ variable "cluster_size" {
   default     = "db-s-1vcpu-1gb"
 }
 
+variable "aws_endpoint" {
+  description = "The AWS endpoint URL"
+  type        = string
+}
+
 variable "db_name" {
   description = "Database name"
   default     = "statamic"

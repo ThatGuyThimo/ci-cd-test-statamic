@@ -6,48 +6,48 @@ on:
       - "v*"
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  # build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Log in to DigitalOcean Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ secrets.DOCR_REGISTRY }}
-          username: ${{ secrets.DOCR_USERNAME }}
-          password: ${{ secrets.DOCR_PASSWORD }}
+  #     - name: Log in to DigitalOcean Container Registry
+  #       uses: docker/login-action@v2
+  #       with:
+  #         registry: ${{ secrets.DOCR_REGISTRY }}
+  #         username: ${{ secrets.DOCR_USERNAME }}
+  #         password: ${{ secrets.DOCR_PASSWORD }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v3
 
-      # Build & Push Laravel app image
-      - name: Build and Push Laravel Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./dockerfile
-          push: true
-          tags: |
-            ${{ secrets.DOCR_REGISTRY }}/statamic-app:${{ github.ref_name }}
-            ${{ secrets.DOCR_REGISTRY }}/statamic-app:latest
+  #     # Build & Push Laravel app image
+  #     - name: Build and Push Laravel Image
+  #       uses: docker/build-push-action@v5
+  #       with:
+  #         context: .
+  #         file: ./dockerfile
+  #         push: true
+  #         tags: |
+  #           ${{ secrets.DOCR_REGISTRY }}/statamic-app:${{ github.ref_name }}
+  #           ${{ secrets.DOCR_REGISTRY }}/statamic-app:latest
 
-      # Build & Push MinIO custom image
-      # - name: Build and Push MinIO Image
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: .
-      #     file: ./docker/dockerfile.minio
-      #     push: true
-      #     tags: |
-      #       ${{ secrets.DOCR_REGISTRY }}/statamic-minio:${{ github.ref_name }}
-      #       ${{ secrets.DOCR_REGISTRY }}/statamic-minio:latest
+  # Build & Push MinIO custom image
+  # - name: Build and Push MinIO Image
+  #   uses: docker/build-push-action@v5
+  #   with:
+  #     context: .
+  #     file: ./docker/dockerfile.minio
+  #     push: true
+  #     tags: |
+  #       ${{ secrets.DOCR_REGISTRY }}/statamic-minio:${{ github.ref_name }}
+  #       ${{ secrets.DOCR_REGISTRY }}/statamic-minio:latest
 
   # Provision infrastructure with Terraform
   terraform:
     runs-on: ubuntu-latest
-    needs: build
+    # needs: build
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -113,7 +113,6 @@ jobs:
             -var "redis_password=${{ secrets.REDIS_PASSWORD }}" \
             -var "spaces_key=${{ secrets.SPACES_KEY }}" \
             -var "app_repository=${{ secrets.DOCR_REPOSITORY }}" \
-            -var "aws_endpoint=${{ secrets.AWS_ENDPOINT }}" \
             -var "db_connection=${{ secrets.DB_CONNECTION }}" \
             -var "db_host=${{ secrets.DB_HOST }}" \
             -var "db_port=${{ secrets.DB_PORT }}" \
@@ -126,48 +125,3 @@ jobs:
         with:
           name: terraform-log
           path: infra/terraform.log
-
-  set-app-url-and-redeploy:
-    runs-on: ubuntu-latest
-    needs: terraform
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download Terraform log (state)
-        uses: actions/download-artifact@v4
-        with:
-          name: terraform-log
-          path: infra
-
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v2
-
-      - name: Get App Live URL from Terraform output
-        id: get_url
-        run: |
-          cd infra
-          terraform init
-          APP_URL=$(terraform output -raw app_live_url 2>/dev/null)
-          if [ -n "$APP_URL" ]; then
-            echo "APP_URL=$APP_URL" >> $GITHUB_ENV
-          else
-            echo "Failed to get APP_URL from terraform output" >&2
-            exit 1
-          fi
-
-      - name: Redeploy with correct APP_URL
-        run: |
-          cd infra
-          export TF_LOG=DEBUG
-          terraform apply -auto-approve \
-            -var "do_token=${{ secrets.DO_TOKEN }}" \
-            -var "app_key=${{ secrets.APP_KEY }}" \
-            -var "app_image=${{ secrets.DOCR_REGISTRY }}/statamic-app:latest" \
-            -var "db_password=${{ secrets.DB_PASSWORD }}" \
-            -var "region=${{ secrets.REGION }}" \
-            -var "redis_password=${{ secrets.REDIS_PASSWORD }}" \
-            -var "spaces_key=${{ secrets.SPACES_KEY }}" \
-            -var "app_repository=${{ secrets.DOCR_REPOSITORY }}" \
-            -var "spaces_secret=${{ secrets.SPACES_SECRET }}" \
-            -var "app_url=${{ env.APP_URL }}" | tee terraform.log
