@@ -133,6 +133,10 @@ USER www-data
 # Install npm dependencies and build frontend assets
 RUN npm install
 RUN npm run build
+
+# Ensure Statamic control panel assets are in the right place
+RUN ls public/
+
 # Publish Statamic control panel assets (ensure Vite manifest is present)
 # RUN php please assets:publish || true
 # RUN php please statamic:build
