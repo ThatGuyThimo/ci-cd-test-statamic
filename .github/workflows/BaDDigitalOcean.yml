@@ -119,7 +119,7 @@ jobs:
             -var "db_port=${{ secrets.DB_PORT }}" \
             -var "db_name=${{ secrets.DB_DATABASE }}" \
             -var "db_user=${{ secrets.DB_USERNAME }}" \
-            -var "app_debug=${{ variables.APP_DEBUG }}" \
+            -var "app_debug=${{ vars.APP_DEBUG }}" \
             -var "spaces_secret=${{ secrets.SPACES_SECRET }}" | tee terraform.log
       - name: Upload Terraform log
         uses: actions/upload-artifact@v4
