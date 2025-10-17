@@ -51,6 +51,11 @@ resource "digitalocean_app" "statamic" {
 				value = var.app_url
 				scope = "RUN_AND_BUILD_TIME"
 			}
+      env {
+        key   = "ASSET_URL"
+        value = var.asset_url
+        scope = "RUN_AND_BUILD_TIME"
+      }
 			env {
 				key   = "APP_DEBUG"
 				value = var.app_debug

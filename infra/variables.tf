@@ -97,6 +97,13 @@ variable "app_url" {
   sensitive   = false
 }
 
+variable "asset_url" {
+  description = "The URL for serving assets"
+  type        = string
+  default     = "https://localhost"
+  # this NEEDS to be set to the right url when deployed in Digital Ocean
+}
+
 variable "app_debug" {
   description = "Enable or disable debug mode"
   type        = bool

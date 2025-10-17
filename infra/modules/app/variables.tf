@@ -43,6 +43,11 @@ variable "app_url" {
 	type		 = string
 }
 
+variable "asset_url" {
+  description = "The URL for serving assets"
+  type		 = string
+}
+
 variable "app_debug" {
 	description = "Enable or disable debug mode"
 	type		 = bool
