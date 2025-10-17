@@ -120,7 +120,7 @@ RUN rm -rf /var/www/html/node_modules
 WORKDIR /var/www/html
 ENV COMPOSER_ALLOW_SUPERUSER=1
 COPY composer.json composer.lock ./
-RUN composer install --optimize-autoloader --no-interaction --no-scripts
+RUN composer install --optimize-autoloader --no-interaction 
 
 # Build Statamic CP assets
 # RUN php please statamic:build
