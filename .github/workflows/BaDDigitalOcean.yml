@@ -101,7 +101,7 @@ jobs:
       - name: Terraform Init & Apply with live debug
         run: |
           cd infra
-          export TF_LOG=DEBUG
+          # export TF_LOG=DEBUG
           # Don't set TF_LOG_PATH to avoid conflict with tee
           terraform init
           terraform apply -auto-approve \
@@ -121,7 +121,7 @@ jobs:
             -var "app_debug=${{ vars.APP_DEBUG }}" \
             -var "spaces_secret=${{ secrets.SPACES_SECRET }}" | tee terraform.log
           # Save the app_url output for the next job
-          export TF_LOG=""
+          # export TF_LOG=""
           terraform output -raw app_url > app_url.txt
           mv app_url.txt ..
 
