@@ -127,6 +127,8 @@ RUN composer install --optimize-autoloader --no-interaction
 # RUN php please cp:assets:publish || true
 
 RUN mkdir -p /var/log/nginx && chown -R www-data:www-data /var/log/nginx
+# Fix permissions for Statamic storage directory
+RUN chown -R www-data:www-data /var/www/html/storage
 
 # Switch to www-data user for the rest of the operations
 USER www-data
@@ -145,7 +147,9 @@ RUN rm -rf node_modules
 
 
 # Fix permissions for Statamic storage directory
-RUN chown -R www-data:www-data /var/www/html/storage
+
+# # Create a directory for Statamic's stache-locks
+# RUN mkdir -p /var/www/html/storage/statamic/stache-locks && chown -R www-data:www-data /var/www/html/storage
 
 # Expose port 8080 to match DigitalOcean App Platform config
 EXPOSE 8080
