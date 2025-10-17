@@ -121,6 +121,7 @@ jobs:
             -var "app_debug=${{ vars.APP_DEBUG }}" \
             -var "spaces_secret=${{ secrets.SPACES_SECRET }}" | tee terraform.log
           # Save the app_url output for the next job
+          export TF_LOG=""
           terraform output -raw app_url > app_url.txt
           mv app_url.txt ..
 
