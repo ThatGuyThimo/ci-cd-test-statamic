@@ -143,5 +143,9 @@ RUN ls public/
 # RUN php please statamic:build
 RUN rm -rf node_modules
 
+
+# Fix permissions for Statamic storage directory
+RUN chown -R www-data:www-data /var/www/html/storage
+
 # Expose port 8080 to match DigitalOcean App Platform config
 EXPOSE 8080
