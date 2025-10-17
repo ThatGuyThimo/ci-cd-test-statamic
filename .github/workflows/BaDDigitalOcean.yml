@@ -125,3 +125,33 @@ jobs:
         with:
           name: terraform-log
           path: infra/terraform.log
+
+    set-app-url-and-redeploy:
+      runs-on: ubuntu-latest
+      needs: terraform
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+
+        - name: Install Terraform
+          uses: hashicorp/setup-terraform@v2
+
+        - name: Get DigitalOcean assigned domain
+          run: |
+            cd infra
+            DOMAIN=$(terraform output -raw app_url)
+            echo "DOMAIN=$DOMAIN" >> $GITHUB_ENV
+
+        - name: Patch APP_URL to https
+          run: |
+            APP_URL="https://$DOMAIN"
+            echo "APP_URL=$APP_URL" >> $GITHUB_ENV
+
+        - name: Redeploy app with new APP_URL
+          run: |
+            # Update app.yaml with new APP_URL
+            sed -i.bak "/key: APP_URL/!b;n;c\\                  value: \"$APP_URL\"" app.yaml
+            cat app.yaml
+            # Re-apply Terraform to redeploy
+            cd infra
+            terraform apply -auto-approve -var "app_url=$APP_URL"
