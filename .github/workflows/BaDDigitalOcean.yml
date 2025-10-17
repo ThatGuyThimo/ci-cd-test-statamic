@@ -120,11 +120,20 @@ jobs:
             -var "db_user=${{ secrets.DB_USERNAME }}" \
             -var "app_debug=${{ vars.APP_DEBUG }}" \
             -var "spaces_secret=${{ secrets.SPACES_SECRET }}" | tee terraform.log
-      - name: Upload Terraform log
+          # Save the app_url output for the next job
+          terraform output -raw app_url > ../app_url.txt
+
+      # - name: Upload Terraform log
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: terraform-log
+      #     path: infra/terraform.log
+
+      - name: Upload app_url output
         uses: actions/upload-artifact@v4
         with:
-          name: terraform-log
-          path: infra/terraform.log
+          name: app-url
+          path: app_url.txt
 
   set-app-url-and-redeploy:
     runs-on: ubuntu-latest
@@ -136,10 +145,15 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: Get DigitalOcean assigned domain
+      - name: Download app_url output
+        uses: actions/download-artifact@v4
+        with:
+          name: app-url
+
+      - name: Read assigned domain
+        id: get_domain
         run: |
-          cd infra
-          DOMAIN=$(terraform output -raw app_url)
+          DOMAIN=$(cat app_url.txt)
           echo "DOMAIN=$DOMAIN" >> $GITHUB_ENV
 
       - name: Patch APP_URL to https
