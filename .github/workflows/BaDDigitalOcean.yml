@@ -95,6 +95,12 @@ jobs:
           name: app-spec
           path: app.yaml
 
+      - name: Upload app.yaml artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-spec
+          path: app.yaml
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -153,6 +159,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: app-url
+
+      - name: Download app.yaml artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-spec
 
       - name: Read assigned domain
         id: get_domain
