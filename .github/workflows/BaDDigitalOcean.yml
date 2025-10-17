@@ -51,8 +51,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          terraform_wrapper: false
 
       - name: Generate app.yaml
         run: |
@@ -99,6 +97,8 @@ jobs:
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
 
       - name: Terraform Init & Apply with live debug
         run: |
