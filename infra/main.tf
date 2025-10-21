@@ -74,6 +74,7 @@ module "app" {
   spaces_secret     = var.spaces_secret
   aws_endpoint      = "https://${var.spaces_bucket}.${var.region}.digitaloceanspaces.com"
   app_url           = var.app_url
+  asset_url         = var.asset_url
   app_debug         = var.app_debug
   log_level         = var.log_level
   session_driver    = var.session_driver
@@ -85,5 +86,4 @@ module "app" {
   db_name           = var.db_name
   db_user           = var.db_user
   db_password       = var.db_password
-  asset_url         = var.asset_url
 }
