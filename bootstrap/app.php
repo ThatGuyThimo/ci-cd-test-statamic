@@ -4,7 +4,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
-
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -12,10 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->web([
-            \App\Http\Middleware\HttpsProtocolMiddleware::class,
-            // Add other web middleware here as needed
-        ]);
+        //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
