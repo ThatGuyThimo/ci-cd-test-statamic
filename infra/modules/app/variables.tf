@@ -28,6 +28,11 @@ variable "spaces_key" {
 	type		 = string
 }
 
+
+variable "spaces_bucket" {
+  description = "The DigitalOcean Spaces bucket name"
+  type        = string
+}
 variable "spaces_secret" {
 	description = "The AWS Spaces secret key"
 	type		 = string

@@ -1,2 +1,45 @@
-# infra
-# public/vendor
+# Ignore git and editor files
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+
+# Environment files (do not bake secrets into image)
+.env
+.env.*
+
+# Node and npm artifacts
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Local runtime files and caches
+tmp/
+vendor/*/build
+
+# Exclude user content and local assets so they are not baked into the image
+content/
+users/
+
+# Exclude any built frontend assets produced locally
+public/build/
+public/assets/
+public/vendor/statamic/cp/build/
+
+# Exclude storage runtime files (these should be volumes in dev)
+storage/framework/**
+storage/logs/**
+storage/statamic/**
+storage/app/public
+
+# Docker and system
+docker-compose.override.yml
+docker-compose.dev.yml
+
+# Optional: exclude local DB or backups
+*.sql
+*.tgz
+
+# Uncomment if you use a host-mounted mysql folder
+# docker/mysql

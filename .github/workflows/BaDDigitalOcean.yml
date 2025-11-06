@@ -117,6 +117,7 @@ jobs:
             -var "db_name=${{ secrets.DB_DATABASE }}" \
             -var "db_user=${{ secrets.DB_USERNAME }}" \
             -var "app_debug=${{ vars.APP_DEBUG }}" \
+            -var "spaces_bucket=${{ secrets.SPACES_BUCKET }}" \
             -var "spaces_secret=${{ secrets.SPACES_SECRET }}" | tee terraform.log
           # Save the app_url output for the next job
           # export TF_LOG=""

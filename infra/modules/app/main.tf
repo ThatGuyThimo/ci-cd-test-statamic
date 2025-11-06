@@ -47,15 +47,30 @@ resource "digitalocean_app" "statamic" {
 				scope = "RUN_AND_BUILD_TIME"
 			}
 			env {
+				key   = "AWS_BUCKET"
+				value = var.spaces_bucket
+				scope = "RUN_AND_BUILD_TIME"
+			}
+			env {
+				key   = "AWS_URL"
+				value = "https://${var.spaces_bucket}.${var.region}.digitaloceanspaces.com"
+				scope = "RUN_AND_BUILD_TIME"
+			}
+			env {
+				key   = "AWS_USE_PATH_STYLE_ENDPOINT"
+				value = "false"
+				scope = "RUN_AND_BUILD_TIME"
+			}
+			env {
 				key   = "APP_URL"
 				value = var.app_url
 				scope = "RUN_AND_BUILD_TIME"
 			}
-      env {
-        key   = "ASSET_URL"
-        value = var.asset_url
-        scope = "RUN_AND_BUILD_TIME"
-      }
+			env {
+				key   = "ASSET_URL"
+				value = var.asset_url
+				scope = "RUN_AND_BUILD_TIME"
+			}
 			env {
 				key   = "APP_DEBUG"
 				value = var.app_debug
@@ -66,51 +81,51 @@ resource "digitalocean_app" "statamic" {
 				value = var.log_level
 				scope = "RUN_AND_BUILD_TIME"
 			}
-      env {
-        key   = "DB_CONNECTION"
-        value = var.db_connection
-        scope = "RUN_AND_BUILD_TIME"  
-      }
-      env {
-        key   = "DB_HOST"
-        value = var.db_host
-        scope = "RUN_AND_BUILD_TIME"
-      }
-      env {
-        key   = "DB_PORT"
-        value = var.db_port
-        scope = "RUN_AND_BUILD_TIME"
-      }
-      env {
-        key   = "DB_DATABASE"
-        value = var.db_name
-        scope = "RUN_AND_BUILD_TIME"
-      }
-      env {
-        key   = "DB_USERNAME"
-        value = var.db_user
-        scope = "RUN_AND_BUILD_TIME"
-      }
-      env {
-        key   = "DB_PASSWORD"
-        value = var.db_password
-        scope = "RUN_AND_BUILD_TIME"
-      }
-      env {
-        key   = "SESSION_DRIVER"
-        value = var.session_driver
-        scope = "RUN_AND_BUILD_TIME"
-      }
-      env {
-        key   = "SESSION_LIFETIME"
-        value = var.session_lifetime
-        scope = "RUN_AND_BUILD_TIME"
-      }
-      env {
-        key   = "SESSIION_ENCRYPT"
-        value = var.session_encrypt
-        scope = "RUN_AND_BUILD_TIME"
-      }
+			env {
+				key   = "DB_CONNECTION"
+				value = var.db_connection
+				scope = "RUN_AND_BUILD_TIME"  
+			}
+			env {
+				key   = "DB_HOST"
+				value = var.db_host
+				scope = "RUN_AND_BUILD_TIME"
+			}
+			env {
+				key   = "DB_PORT"
+				value = var.db_port
+				scope = "RUN_AND_BUILD_TIME"
+			}
+			env {
+				key   = "DB_DATABASE"
+				value = var.db_name
+				scope = "RUN_AND_BUILD_TIME"
+			}
+			env {
+				key   = "DB_USERNAME"
+				value = var.db_user
+				scope = "RUN_AND_BUILD_TIME"
+			}
+			env {
+				key   = "DB_PASSWORD"
+				value = var.db_password
+				scope = "RUN_AND_BUILD_TIME"
+			}
+			env {
+				key   = "SESSION_DRIVER"
+				value = var.session_driver
+				scope = "RUN_AND_BUILD_TIME"
+			}
+			env {
+				key   = "SESSION_LIFETIME"
+				value = var.session_lifetime
+				scope = "RUN_AND_BUILD_TIME"
+			}
+			env {
+				key   = "SESSIION_ENCRYPT"
+				value = var.session_encrypt
+				scope = "RUN_AND_BUILD_TIME"
+			}
 		}
 	}
 }

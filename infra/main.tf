@@ -72,7 +72,9 @@ module "app" {
   app_key           = var.app_key
   spaces_key        = var.spaces_key
   spaces_secret     = var.spaces_secret
-  aws_endpoint      = "https://${var.spaces_bucket}.${var.region}.digitaloceanspaces.com"
+  # Use the region endpoint (do NOT include the bucket name here).
+  aws_endpoint      = "https://${var.region}.digitaloceanspaces.com"
+  spaces_bucket     = var.spaces_bucket
   app_url           = var.app_url
   asset_url         = var.asset_url
   app_debug         = var.app_debug
