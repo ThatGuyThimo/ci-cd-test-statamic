@@ -120,7 +120,13 @@ RUN rm -rf /var/www/html/node_modules
 WORKDIR /var/www/html
 ENV COMPOSER_ALLOW_SUPERUSER=1
 COPY composer.json composer.lock ./
-RUN composer install --optimize-autoloader --no-interaction 
+# Install composer dependencies without running post-install scripts during image build
+# Post-install scripts (Statamic install/publish) can attempt to contact services like Redis
+# which are not available at build time. We skip scripts here and run them at runtime if needed.
+RUN composer install --optimize-autoloader --no-interaction --no-scripts
+
+# enable running scripts for digitalocean app platform runtime
+# RUN composer install --optimize-autoloader --no-interaction 
 
 # Build Statamic CP assets
 # RUN php please statamic:build
