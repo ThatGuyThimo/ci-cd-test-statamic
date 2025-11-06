@@ -128,14 +128,14 @@ COPY composer.json composer.lock ./
 # Install composer dependencies without running post-install scripts during image build
 # Post-install scripts will be executed at container startup by the entrypoint when runtime
 # services and filesystem layout are available.
-RUN composer install --optimize-autoloader --no-interaction --no-scripts
+RUN composer install --optimize-autoloader --no-interaction
 
 # Copy entrypoint and make executable (entrypoint will run skipped composer scripts at runtime)
-COPY docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# COPY docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+# RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Ensure the entrypoint runs before the default command
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+# ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 # Build Statamic CP assets
 # RUN php please statamic:build
