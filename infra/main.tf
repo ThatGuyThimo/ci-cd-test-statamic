@@ -17,17 +17,17 @@ provider "digitalocean" {
 # --------------------------
 # Managed MySQL (Module)
 # --------------------------
-# module "mysql" {
-#   source       = "./modules/mysql"
-#   providers = {
-#     digitalocean = digitalocean
-#   }
-#   cluster_name = var.cluster_name
-#   cluster_size = var.cluster_size
-#   db_name      = var.db_name
-#   db_user      = var.db_user
-#   region       = var.region
-# }
+module "mysql" {
+  source       = "./modules/mysql"
+  providers = {
+    digitalocean = digitalocean
+  }
+  cluster_name = var.cluster_name
+  cluster_size = var.cluster_size
+  db_name      = var.db_name
+  db_user      = var.db_user
+  region       = var.region
+}
 
 # --------------------------
 # Managed Redis
@@ -47,14 +47,14 @@ provider "digitalocean" {
 # --------------------------
 # DO Spaces (Module)
 # --------------------------
-# module "spaces" {
-#   source        = "./modules/spaces"
-#   providers = {
-#     digitalocean = digitalocean
-#   }
-#   spaces_bucket = var.spaces_bucket
-#   region        = var.region
-# }
+module "spaces" {
+  source        = "./modules/spaces"
+  providers = {
+    digitalocean = digitalocean
+  }
+  spaces_bucket = var.spaces_bucket
+  region        = var.region
+}
 
 
 # --------------------------
