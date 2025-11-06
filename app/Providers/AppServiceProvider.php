@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
 
-        // $this->configureSecureUrls();
+        $this->configureSecureUrls();
 
         // Statamic::vite('app', [
         //     'resources/js/cp.js',
