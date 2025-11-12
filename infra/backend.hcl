@@ -4,9 +4,11 @@
 bucket         = "${TF_STATE_BUCKET}"
 key            = "${TF_STATE_PATH}/terraform.tfstate"
 region         = "${TF_STATE_REGION}"
-endpoint.s3       = "${TF_STATE_ENDPOINT}"
+endpoints = {
+	s3 = "${TF_STATE_ENDPOINT}"
+}
 access_key     = "${DO_SPACES_KEY}"
 secret_key     = "${DO_SPACES_SECRET}"
 skip_credentials_validation = true
 skip_metadata_api_check     = true
-use_path_style             = true
+use_path_style = true

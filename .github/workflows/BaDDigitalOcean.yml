@@ -102,32 +102,25 @@ jobs:
           set -euo pipefail
           cd infra
 
-          # Build backend.hcl from secrets (endpoints.s3 accepts full URL like https://ams3.digitaloceanspaces.com)
+          # Build backend.hcl from secrets (use an endpoints map so HCL is valid)
           cat > backend.hcl <<EOF
           bucket         = "${{ secrets.TF_STATE_BUCKET }}"
           key            = "${{ secrets.TF_STATE_PATH }}/terraform.tfstate"
           region         = "${{ secrets.TF_STATE_REGION }}"
-          endpoints.s3   = "https://${{ secrets.TF_STATE_ENDPOINT }}"
+          endpoints = {
+            s3 = "https://${{ secrets.TF_STATE_ENDPOINT }}"
+          }
           access_key     = "${{ secrets.DO_SPACES_KEY }}"
           secret_key     = "${{ secrets.DO_SPACES_SECRET }}"
           skip_credentials_validation = true
           skip_metadata_api_check     = true
-          use_path_style              = true
+          use_path_style = true
           EOF
 
           export TF_IN_AUTOMATION=1
 
-          # Initialize Terraform non-interactively and reconfigure backend; pass backend-config values directly from GitHub secrets
-          terraform init -input=false -reconfigure -backend-config=backend.hcl \
-            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
-            -backend-config="key=${{ vars.TF_STATE_PATH }}/terraform.tfstate" \
-            -backend-config="region=${{ secrets.TF_STATE_REGION }}" \
-            -backend-config="endpoint=${{ secrets.TF_STATE_ENDPOINT }}" \
-            -backend-config="access_key=${{ vars.DO_SPACES_KEY }}" \
-            -backend-config="secret_key=${{ secrets.DO_SPACES_SECRET }}" \
-            -backend-config="skip_credentials_validation=true" \
-            -backend-config="skip_metadata_api_check=true" \
-            -backend-config="use_path_style=true"
+          # Initialize Terraform non-interactively and reconfigure backend using the generated backend.hcl
+          terraform init -input=false -reconfigure -backend-config=backend.hcl
 
           terraform apply -input=false -auto-approve \
             -var "do_token=${{ secrets.DO_TOKEN }}" \
