@@ -1,4 +1,4 @@
-output "app_url" {
+output "app_id" {
   value = module.app.app_id # Or use another output from the app module if you want the live_url
 }
 
@@ -6,9 +6,9 @@ output "app_live_url" {
   value = module.app.live_url
 }
 
-# output "mysql_host" {
-#   value = module.mysql.db_host
-# }
+output "mysql_host" {
+  value = module.mysql.db_host
+}
 
 # output "spaces_bucket" {
 #   value = module.spaces.bucket_name
