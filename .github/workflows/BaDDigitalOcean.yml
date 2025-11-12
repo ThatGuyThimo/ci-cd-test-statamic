@@ -97,44 +97,20 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: Debug env values (safe)
-        run: |
-          echo "TF_STATE_BUCKET='${secrets.TF_STATE_BUCKET:-<empty>}'"
-          echo "TF_STATE_ENDPOINT='${secrets.TF_STATE_ENDPOINT:-<empty>}'"
-          echo "TF_STATE_REGION='${secrets.TF_STATE_REGION:-<empty>}'"
-          echo "TF_STATE_PATH='${secrets.TF_STATE_PATH:-<empty>}'"
-          if [ -n "${DO_SPACES_KEY:-}" ]; then echo "DO_SPACES_KEY length=${#DO_SPACES_KEY}"; else echo "DO_SPACES_KEY=<empty>"; fi
-          if [ -n "${DO_SPACES_SECRET:-}" ]; then echo "DO_SPACES_SECRET length=${#DO_SPACES_SECRET}"; else echo "DO_SPACES_SECRET=<empty>"; fi
-
       - name: Terraform Init & Apply with remote backend
-        env:
-          TF_STATE_BUCKET: ${{ secrets.TF_STATE_BUCKET }}
-          TF_STATE_ENDPOINT: ${{ secrets.TF_STATE_ENDPOINT }}
-          TF_STATE_REGION: ${{ secrets.TF_STATE_REGION }}
-          TF_STATE_PATH: ${{ vars.TF_STATE_PATH }}
-          DO_SPACES_KEY: ${{ vars.DO_SPACES_KEY }}
-          DO_SPACES_SECRET: ${{ secrets.DO_SPACES_SECRET }}
         run: |
           set -euo pipefail
           cd infra
-          # Fail early if required backend secrets are missing so we don't get an interactive prompt
-          : "${TF_STATE_BUCKET:?Missing TF_STATE_BUCKET secret (set TF_STATE_BUCKET in repo secrets)}"
-          : "${TF_STATE_ENDPOINT:?Missing TF_STATE_ENDPOINT secret (set TF_STATE_ENDPOINT in repo secrets)}"
-          : "${TF_STATE_REGION:?Missing TF_STATE_REGION secret (set TF_STATE_REGION in repo secrets)}"
-          : "${DO_SPACES_KEY:?Missing DO_SPACES_KEY variable (set DO_SPACES_KEY in repo variables)}"
-          : "${DO_SPACES_SECRET:?Missing DO_SPACES_SECRET secret (set DO_SPACES_SECRET in repo secrets)}"
-          : "${TF_STATE_PATH:?Missing TF_STATE_PATH variable (set TF_STATE_PATH in repo variables)}"
-
           export TF_IN_AUTOMATION=1
 
-          # Initialize Terraform non-interactively and reconfigure backend; pass backend-config values from secrets
+          # Initialize Terraform non-interactively and reconfigure backend; pass backend-config values directly from GitHub secrets
           terraform init -input=false -reconfigure \
-            -backend-config="bucket=${TF_STATE_BUCKET}" \
-            -backend-config="key=${TF_STATE_PATH}/terraform.tfstate" \
-            -backend-config="region=${TF_STATE_REGION}" \
-            -backend-config="endpoint=${TF_STATE_ENDPOINT}" \
-            -backend-config="access_key=${DO_SPACES_KEY}" \
-            -backend-config="secret_key=${DO_SPACES_SECRET}" \
+            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+            -backend-config="key=${{ vars.TF_STATE_PATH }}/terraform.tfstate" \
+            -backend-config="region=${{ secrets.TF_STATE_REGION }}" \
+            -backend-config="endpoint=${{ secrets.TF_STATE_ENDPOINT }}" \
+            -backend-config="access_key=${{ vars.DO_SPACES_KEY }}" \
+            -backend-config="secret_key=${{ secrets.DO_SPACES_SECRET }}" \
             -backend-config="skip_credentials_validation=true" \
             -backend-config="skip_metadata_api_check=true" \
             -backend-config="force_path_style=true"
