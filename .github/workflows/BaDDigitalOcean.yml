@@ -113,7 +113,7 @@ jobs:
           TF_STATE_REGION: ${{ secrets.TF_STATE_REGION }}
           TF_STATE_PATH: ${{ vars.TF_STATE_PATH }}
           DO_SPACES_KEY: ${{ vars.DO_SPACES_KEY }}
-          DO_SPACES_SECRET: ${{ secret.DO_SPACES_SECRET }}
+          DO_SPACES_SECRET: ${{ secrets.DO_SPACES_SECRET }}
         run: |
           set -euo pipefail
           cd infra
