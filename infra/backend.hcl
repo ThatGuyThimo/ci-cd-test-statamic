@@ -2,7 +2,7 @@
 # This file should NOT be committed with secrets. Keep a copy locally or in CI secrets.
 
 bucket         = "${TF_STATE_BUCKET}"
-key            = "ci-cd-test-statamic/terraform.tfstate"
+key            = "${TF_STATE_PATH}/terraform.tfstate"
 region         = "${TF_STATE_REGION}"
 endpoint       = "${TF_STATE_ENDPOINT}"
 access_key     = "${DO_SPACES_KEY}"
