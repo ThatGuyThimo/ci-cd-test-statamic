@@ -7,32 +7,32 @@ on:
 
 jobs:
   # make the build an sepperate action that looks at the tag
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  # build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Log in to DigitalOcean Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ secrets.DOCR_REGISTRY }}
-          username: ${{ secrets.DOCR_USERNAME }}
-          password: ${{ secrets.DOCR_PASSWORD }}
+  #     - name: Log in to DigitalOcean Container Registry
+  #       uses: docker/login-action@v2
+  #       with:
+  #         registry: ${{ secrets.DOCR_REGISTRY }}
+  #         username: ${{ secrets.DOCR_USERNAME }}
+  #         password: ${{ secrets.DOCR_PASSWORD }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v3
 
-      # Build & Push Laravel app image
-      - name: Build and Push Laravel Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./dockerfile
-          push: true
-          tags: |
-            ${{ secrets.DOCR_REGISTRY }}/statamic-app:${{ github.ref_name }}
-            ${{ secrets.DOCR_REGISTRY }}/statamic-app:latest
+  #     # Build & Push Laravel app image
+  #     - name: Build and Push Laravel Image
+  #       uses: docker/build-push-action@v5
+  #       with:
+  #         context: .
+  #         file: ./dockerfile
+  #         push: true
+  #         tags: |
+  #           ${{ secrets.DOCR_REGISTRY }}/statamic-app:${{ github.ref_name }}
+  #           ${{ secrets.DOCR_REGISTRY }}/statamic-app:latest
 
   # Build & Push MinIO custom image
   # - name: Build and Push MinIO Image
@@ -49,7 +49,7 @@ jobs:
   # Provision infrastructure with Terraform
   terraform:
     runs-on: ubuntu-latest
-    needs: build
+    # needs: build
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -96,16 +96,43 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: Terraform Init & Apply with live debug
+      - name: Terraform Init & Apply with remote backend
+        env:
+          TF_STATE_BUCKET: ${{ secrets.TF_STATE_BUCKET }}
+          TF_STATE_ENDPOINT: ${{ secrets.TF_STATE_ENDPOINT }}
+          TF_STATE_REGION: ${{ secrets.TF_STATE_REGION }}
+          TF_STATE_PATH: ${{ vars.TF_STATE_PATH }}
+          DO_SPACES_KEY: ${{ vars.DO_SPACES_KEY }}
+          DO_SPACES_SECRET: ${{ vars.DO_SPACES_SECRET }}
         run: |
+          set -euo pipefail
           cd infra
-          # export TF_LOG=DEBUG
-          # Don't set TF_LOG_PATH to avoid conflict with tee
-          terraform init
-          terraform apply -auto-approve \
+          # Fail early if required backend secrets are missing so we don't get an interactive prompt
+          : "${TF_STATE_BUCKET:?Missing TF_STATE_BUCKET secret (set TF_STATE_BUCKET in repo secrets)}"
+          : "${TF_STATE_ENDPOINT:?Missing TF_STATE_ENDPOINT secret (set TF_STATE_ENDPOINT in repo secrets)}"
+          : "${TF_STATE_REGION:?Missing TF_STATE_REGION secret (set TF_STATE_REGION in repo secrets)}"
+          : "${DO_SPACES_KEY:?Missing DO_SPACES_KEY variable (set DO_SPACES_KEY in repo variables)}"
+          : "${DO_SPACES_SECRET:?Missing DO_SPACES_SECRET secret (set DO_SPACES_SECRET in repo secrets)}"
+          : "${TF_STATE_PATH:?Missing TF_STATE_PATH variable (set TF_STATE_PATH in repo variables)}"
+
+          export TF_IN_AUTOMATION=1
+
+          # Initialize Terraform non-interactively and reconfigure backend; pass backend-config values from secrets
+          terraform init -input=false -reconfigure \
+            -backend-config="bucket=${TF_STATE_BUCKET}" \
+            -backend-config="key=${TF_STATE_PATH}/terraform.tfstate" \
+            -backend-config="region=${TF_STATE_REGION}" \
+            -backend-config="endpoint=${TF_STATE_ENDPOINT}" \
+            -backend-config="access_key=${DO_SPACES_KEY}" \
+            -backend-config="secret_key=${DO_SPACES_SECRET}" \
+            -backend-config="skip_credentials_validation=true" \
+            -backend-config="skip_metadata_api_check=true" \
+            -backend-config="force_path_style=true"
+
+          terraform apply -input=false -auto-approve \
             -var "do_token=${{ secrets.DO_TOKEN }}" \
             -var "app_key=${{ secrets.APP_KEY }}" \
-            -var "app_image=${{ secrets.DOCR_REGISTRY }}/statamic-app:latest" \
+            -var "app_image=${{ secrets.DOCR_REGISTRY }}/${{ vars.DOCR_IMAGE }}:latest" \
             -var "db_password=${{ secrets.DB_PASSWORD }}" \
             -var "region=${{ secrets.REGION }}" \
             -var "redis_password=${{ secrets.REDIS_PASSWORD }}" \
@@ -119,10 +146,16 @@ jobs:
             -var "app_debug=${{ vars.APP_DEBUG }}" \
             -var "spaces_bucket=${{ secrets.SPACES_BUCKET }}" \
             -var "spaces_secret=${{ secrets.SPACES_SECRET }}" | tee terraform.log
-          # Save the app_url output for the next job
-          # export TF_LOG=""
-          terraform output -raw app_live_url > app_url.txt
-          mv app_url.txt ..
+
+          # Export outputs as JSON and move to top-level so other jobs can pick them up as an artifact
+          terraform output -json > tf_outputs.json
+          mv tf_outputs.json ..
+
+      - name: Upload Terraform outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-outputs
+          path: tf_outputs.json
 
       # - name: Upload Terraform log
       #   uses: actions/upload-artifact@v4
