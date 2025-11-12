@@ -97,6 +97,15 @@ jobs:
         with:
           terraform_wrapper: false
 
+      - name: Debug env values (safe)
+        run: |
+          echo "TF_STATE_BUCKET='${TF_STATE_BUCKET:-<empty>}'"
+          echo "TF_STATE_ENDPOINT='${TF_STATE_ENDPOINT:-<empty>}'"
+          echo "TF_STATE_REGION='${TF_STATE_REGION:-<empty>}'"
+          echo "TF_STATE_PATH='${TF_STATE_PATH:-<empty>}'"
+          if [ -n "${DO_SPACES_KEY:-}" ]; then echo "DO_SPACES_KEY length=${#DO_SPACES_KEY}"; else echo "DO_SPACES_KEY=<empty>"; fi
+          if [ -n "${DO_SPACES_SECRET:-}" ]; then echo "DO_SPACES_SECRET length=${#DO_SPACES_SECRET}"; else echo "DO_SPACES_SECRET=<empty>"; fi
+
       - name: Terraform Init & Apply with remote backend
         env:
           TF_STATE_BUCKET: ${{ secrets.TF_STATE_BUCKET }}
