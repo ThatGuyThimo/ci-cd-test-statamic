@@ -101,10 +101,24 @@ jobs:
         run: |
           set -euo pipefail
           cd infra
+
+          # Build backend.hcl from secrets (endpoints.s3 accepts full URL like https://ams3.digitaloceanspaces.com)
+          cat > backend.hcl <<EOF
+          bucket         = "${{ secrets.TF_STATE_BUCKET }}"
+          key            = "${{ secrets.TF_STATE_PATH }}/terraform.tfstate"
+          region         = "${{ secrets.TF_STATE_REGION }}"
+          endpoints.s3   = "https://${{ secrets.TF_STATE_ENDPOINT }}"
+          access_key     = "${{ secrets.DO_SPACES_KEY }}"
+          secret_key     = "${{ secrets.DO_SPACES_SECRET }}"
+          skip_credentials_validation = true
+          skip_metadata_api_check     = true
+          use_path_style              = true
+          EOF
+
           export TF_IN_AUTOMATION=1
 
           # Initialize Terraform non-interactively and reconfigure backend; pass backend-config values directly from GitHub secrets
-          terraform init -input=false -reconfigure \
+          terraform init -input=false -reconfigure -backend-config=backend.hcl \
             -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
             -backend-config="key=${{ vars.TF_STATE_PATH }}/terraform.tfstate" \
             -backend-config="region=${{ secrets.TF_STATE_REGION }}" \
