@@ -96,12 +96,27 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: Terraform Init & Apply with live debug
+      - name: Terraform Init & Apply with remote backend
+        env:
+          TF_STATE_BUCKET: ${{ secrets.TF_STATE_BUCKET }}
+          TF_STATE_ENDPOINT: ${{ secrets.TF_STATE_ENDPOINT }}
+          TF_STATE_REGION: ${{ secrets.TF_STATE_REGION }}
+          DO_SPACES_KEY: ${{ secrets.SPACES_KEY }}
+          DO_SPACES_SECRET: ${{ secrets.SPACES_SECRET }}
         run: |
           cd infra
-          # export TF_LOG=DEBUG
-          # Don't set TF_LOG_PATH to avoid conflict with tee
-          terraform init
+          # Initialize Terraform with backend-config from secrets so state is persisted in Spaces
+          terraform init \
+            -backend-config="bucket=${TF_STATE_BUCKET}" \
+            -backend-config="key=ci-cd-test-statamic/terraform.tfstate" \
+            -backend-config="region=${TF_STATE_REGION}" \
+            -backend-config="endpoint=${TF_STATE_ENDPOINT}" \
+            -backend-config="access_key=${DO_SPACES_KEY}" \
+            -backend-config="secret_key=${DO_SPACES_SECRET}" \
+            -backend-config="skip_credentials_validation=true" \
+            -backend-config="skip_metadata_api_check=true" \
+            -backend-config="force_path_style=true"
+
           terraform apply -auto-approve \
             -var "do_token=${{ secrets.DO_TOKEN }}" \
             -var "app_key=${{ secrets.APP_KEY }}" \
@@ -118,10 +133,17 @@ jobs:
             -var "db_user=${{ secrets.DB_USERNAME }}" \
             -var "app_debug=${{ vars.APP_DEBUG }}" \
             -var "spaces_secret=${{ secrets.SPACES_SECRET }}" | tee terraform.log
-          # Save the app_url output for the next job
-          # export TF_LOG=""
-          terraform output -raw app_live_url > app_url.txt
-          mv app_url.txt ..
+
+          # Export outputs as JSON and upload for later jobs
+          terraform output -json > tf_outputs.json
+          # move outputs to top-level so other jobs can pick them up as an artifact
+          mv tf_outputs.json ..
+
+      - name: Upload Terraform outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-outputs
+          path: tf_outputs.json
 
       # - name: Upload Terraform log
       #   uses: actions/upload-artifact@v4

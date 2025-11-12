@@ -1,4 +1,5 @@
 terraform {
+  backend "s3" {}
   required_providers {
     digitalocean = {
       source  = "digitalocean/digitalocean"
@@ -47,14 +48,14 @@ module "mysql" {
 # --------------------------
 # DO Spaces (Module)
 # --------------------------
-module "spaces" {
-  source        = "./modules/spaces"
-  providers = {
-    digitalocean = digitalocean
-  }
-  spaces_bucket = var.spaces_bucket
-  region        = var.region
-}
+# module "spaces" {
+#   source        = "./modules/spaces"
+#   providers = {
+#     digitalocean = digitalocean
+#   }
+#   spaces_bucket = var.spaces_bucket
+#   region        = var.region
+# }
 
 
 # --------------------------
